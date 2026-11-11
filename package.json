@@ -10,7 +10,10 @@
     "dev": "vite --host 127.0.0.1 --strictPort",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "generate:api": "openapi-typescript ../fortified-elite-care-backend/openapi.json -o src/api/schema.ts",
+    "generate:api": "openapi-typescript ../fortified-elite-care-backend/openapi.json -o src/shared/api/schema.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "lint": "prettier --check ."
   },
   "dependencies": {
@@ -21,12 +24,17 @@
     "react-router-dom": "^7.13.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.9",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.0",
+    "@vitest/coverage-v8": "^4.1.12",
+    "jsdom": "^28.1.0",
     "openapi-typescript": "^7.13.0",
     "prettier": "^3.6.0",
     "typescript": "~5.9.0",
-    "vite": "^8.0.0"
+    "vite": "^8.0.0",
+    "vitest": "^4.1.12"
   }
 }

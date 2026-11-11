@@ -1,3 +1,4 @@
 node_modules/
 dist/
-src/api/schema.ts
+src/shared/api/schema.ts
+coverage/

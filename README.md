@@ -1,6 +1,6 @@
 # Fortified Elite Care web
 
-React, TypeScript and Vite. The public site introduces the home care programme and its packages. The patient, doctor and admin portals share a typed NestJS API client.
+React, TypeScript and Vite for the public site and the patient, doctor and admin portals.
 
 ## Run locally
 
@@ -12,19 +12,14 @@ cp .env.example .env
 npm run dev
 ```
 
-In PowerShell, use `Copy-Item .env.example .env`. Open `http://127.0.0.1:5173`.
+Use `Copy-Item .env.example .env` in PowerShell. Open `http://127.0.0.1:5173`.
 
-To try the workflow:
+## Development
 
-1. Create a patient and a doctor through their respective forms. Use the same service area for both.
-2. Provision an administrator with the command in the backend README. Sign in and approve both applications under **Enrolments**.
-3. As the patient, request a checkup for today in the service timezone. As the doctor, claim the visit, document it and sign the note.
-4. As an administrator provisioned as a clinical reviewer, release the summary under **Visit management**. As the patient, check **Visit summaries**.
+- `npm run lint` checks formatting.
+- `npm test` runs the unit and browser component tests.
+- `npm run test:coverage` writes a coverage report.
+- `npm run build` typechecks and builds the SPA.
+- `npm run generate:api` rebuilds the client schema from the sibling backend's `openapi.json`.
 
-## Build and Cloudflare Pages
-
-Run `npm run lint` and `npm run build`. For a Pages preview, select the frontend repo, use Node 24, set the build command to `npm run build` and the output directory to `dist`. Set `VITE_API_URL` to the HTTPS API URL ending in `/api/v1`. Use a same-site custom domain pair for browser sessions, and set the API's `WEB_ORIGIN` to the exact frontend origin.
-
-## API changes
-
-Generate `openapi.json` from the backend using `npm run openapi`, then run `npm run generate:api` in this checkout. Commit the generated types when changing the API.
+See the [documentation index](docs/README.md) for structure, routes, API usage, styling and the local workflow. The design handoff is in the parent workspace at `design/fec-redesign`.

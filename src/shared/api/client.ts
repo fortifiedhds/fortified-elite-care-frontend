@@ -47,3 +47,5 @@ export function messageFor(error: unknown) {
       ? error.message
       : "Something went wrong. Please try again.";
 }
+
+export const pathParams = (id: string) => ({ params: { path: { id } } });

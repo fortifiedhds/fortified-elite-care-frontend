@@ -20,14 +20,62 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/resources/medical-officer-welcome": {
+    "/auth/register/patient": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["medicalOfficerWelcome"];
+        get?: never;
+        put?: never;
+        post: operations["patient"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/register/doctor": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["doctor"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["me"];
         put?: never;
         post?: never;
         delete?: never;
@@ -36,7 +84,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/enrolments/{id}/approve": {
+    "/auth/logout": {
         parameters: {
             query?: never;
             header?: never;
@@ -45,27 +93,11 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
+        post: operations["logout"];
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["approve"];
-        trace?: never;
-    };
-    "/patients/preference": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["preference"];
+        patch?: never;
         trace?: never;
     };
     "/visits": {
@@ -164,6 +196,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/resources/medical-officer-welcome": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["medicalOfficerWelcome"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/enrolments/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["approve"];
+        trace?: never;
+    };
+    "/patients/preference": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["preference"];
+        trace?: never;
+    };
     "/extra-visits": {
         parameters: {
             query?: never;
@@ -212,6 +292,102 @@ export interface paths {
         patch: operations["markRead"];
         trace?: never;
     };
+    "/forms/{kind}/definition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["definition"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/patients/forms/{kind}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["patientForm"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["savePatientForm"];
+        trace?: never;
+    };
+    "/patients/care-permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["carePermissions"];
+        put?: never;
+        post: operations["saveCarePermissions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/visits/{id}/baseline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["clinicianBaseline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["saveClinicianBaseline"];
+        trace?: never;
+    };
+    "/admin/registrations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["submittedRegistration"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["recordRegistrationReview"];
+        trace?: never;
+    };
+    "/visits/{id}/addenda": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["noteAddenda"];
+        put?: never;
+        post: operations["addNoteAddendum"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -222,86 +398,6 @@ export interface paths {
         get: operations["check"];
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/register/patient": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["patient"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/register/doctor": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["doctor"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["login"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["me"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["logout"];
         delete?: never;
         options?: never;
         head?: never;
@@ -340,6 +436,10 @@ export interface components {
             doctorId?: string;
             summary?: string;
             observations?: string;
+            structured?: {
+                [key: string]: string | string[];
+            };
+            templateVersion?: string;
             hasSignedNote?: boolean;
             published?: boolean;
         };
@@ -376,32 +476,6 @@ export interface components {
             /** Format: date */
             preferredDate?: string;
         };
-        DateInput: {
-            /**
-             * Format: date
-             * @example 2027-01-10
-             */
-            date: string;
-        };
-        AssignInput: {
-            /** Format: uuid */
-            doctorId: string;
-        };
-        NoteInput: {
-            observations: string;
-            summary: string;
-        };
-        SupportInput: {
-            reason: string;
-        };
-        ExtraVisitInput: {
-            /**
-             * Format: date
-             * @example 2027-01-10
-             */
-            date: string;
-            decision: string;
-        };
         PatientInput: {
             /** Format: email */
             email: string;
@@ -434,6 +508,143 @@ export interface components {
             email: string;
             password: string;
         };
+        DateInput: {
+            /**
+             * Format: date
+             * @example 2027-01-10
+             */
+            date: string;
+        };
+        AssignInput: {
+            /** Format: uuid */
+            doctorId: string;
+        };
+        NoteInput: {
+            structured?: {
+                [key: string]: string | string[];
+            };
+            observations: string;
+            summary: string;
+        };
+        SupportInput: {
+            reason: string;
+        };
+        ExtraVisitInput: {
+            /**
+             * Format: date
+             * @example 2027-01-10
+             */
+            date: string;
+            decision: string;
+        };
+        FormField: {
+            id: string;
+            label: string;
+            /** @enum {string} */
+            type: "text" | "date" | "tel" | "email" | "textarea" | "select" | "checks" | "number";
+            options?: string[];
+        };
+        FormSection: {
+            title: string;
+            description: string;
+            fields: components["schemas"]["FormField"][];
+        };
+        FormDefinition: {
+            version: string;
+            sections: components["schemas"]["FormSection"][];
+        };
+        FormView: {
+            version: string;
+            revision: number;
+            answers: {
+                [key: string]: string | string[];
+            };
+            /** Format: date-time */
+            submittedAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        FormInput: {
+            version: string;
+            revision: number;
+            answers: {
+                [key: string]: string | string[];
+            };
+            submit: boolean;
+        };
+        Recipient: {
+            name: string;
+            relationship: string;
+            phone: string;
+        };
+        ConsentView: {
+            version: string;
+            choices: {
+                [key: string]: boolean;
+            };
+            recipients: components["schemas"]["Recipient"][];
+            /** Format: date-time */
+            recordedAt?: string;
+        };
+        ConsentChoices: {
+            healthAssessment: boolean;
+            homeVisits: boolean;
+            sampleCollection: boolean;
+            education: boolean;
+            referrals: boolean;
+            sharing: boolean;
+            emergencyContact: boolean;
+        };
+        ConsentInput: {
+            version: string;
+            choices: components["schemas"]["ConsentChoices"];
+            recipients: components["schemas"]["Recipient"][];
+        };
+        BaselineView: {
+            version: string;
+            revision: number;
+            answers: {
+                [key: string]: string | string[];
+            };
+            /** Format: date-time */
+            submittedAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            selfReport?: components["schemas"]["FormView"];
+        };
+        RegistrationView: {
+            version: string;
+            revision: number;
+            answers: {
+                [key: string]: string | string[];
+            };
+            /** Format: date-time */
+            submittedAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            clientNumber?: string;
+            requestedPackage?: string;
+            reviewer?: string;
+            /** Format: date-time */
+            reviewedAt?: string;
+        };
+        RegistrationInput: {
+            clientNumber: string;
+            /** @enum {string} */
+            requestedPackage?: "Silver" | "Gold" | "Platinum";
+        };
+        AddendumView: {
+            correction: string;
+            reason: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            signedAt: string;
+        };
+        AddendumInput: {
+            correction: string;
+            reason: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -462,47 +673,7 @@ export interface operations {
             };
         };
     };
-    medicalOfficerWelcome: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/pdf": string;
-                };
-            };
-        };
-    };
-    approve: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": boolean;
-                };
-            };
-        };
-    };
-    preference: {
+    patient: {
         parameters: {
             query?: never;
             header?: never;
@@ -511,11 +682,95 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DateInput"];
+                "application/json": components["schemas"]["PatientInput"];
             };
         };
         responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountView"];
+                };
+            };
+        };
+    };
+    doctor: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DoctorInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountView"];
+                };
+            };
+        };
+    };
+    login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountView"];
+                };
+            };
+        };
+    };
+    me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountView"];
+                };
+            };
+        };
+    };
+    logout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -665,6 +920,69 @@ export interface operations {
             };
         };
     };
+    medicalOfficerWelcome: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+        };
+    };
+    approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": boolean;
+                };
+            };
+        };
+    };
+    preference: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DateInput"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": boolean;
+                };
+            };
+        };
+    };
     extra: {
         parameters: {
             query?: never;
@@ -734,6 +1052,253 @@ export interface operations {
             };
         };
     };
+    definition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                kind: "REGISTRATION" | "BASELINE_SELF" | "BASELINE_CLINICIAN" | "CONSULTATION";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormDefinition"];
+                };
+            };
+        };
+    };
+    patientForm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                kind: "REGISTRATION" | "BASELINE_SELF";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormView"];
+                };
+            };
+        };
+    };
+    savePatientForm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                kind: "REGISTRATION" | "BASELINE_SELF";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormInput"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormView"];
+                };
+            };
+        };
+    };
+    carePermissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentView"];
+                };
+            };
+        };
+    };
+    saveCarePermissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsentInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentView"];
+                };
+            };
+        };
+    };
+    clinicianBaseline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BaselineView"];
+                };
+            };
+        };
+    };
+    saveClinicianBaseline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormInput"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormView"];
+                };
+            };
+        };
+    };
+    submittedRegistration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RegistrationView"];
+                };
+            };
+        };
+    };
+    recordRegistrationReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegistrationInput"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": boolean;
+                };
+            };
+        };
+    };
+    noteAddenda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AddendumView"][];
+                };
+            };
+        };
+    };
+    addNoteAddendum: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddendumInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AddendumView"];
+                };
+            };
+        };
+    };
     check: {
         parameters: {
             query?: never;
@@ -751,113 +1316,6 @@ export interface operations {
                     "application/json": {
                         ready: boolean;
                     };
-                };
-            };
-        };
-    };
-    patient: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PatientInput"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AccountView"];
-                };
-            };
-        };
-    };
-    doctor: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DoctorInput"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AccountView"];
-                };
-            };
-        };
-    };
-    login: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LoginInput"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AccountView"];
-                };
-            };
-        };
-    };
-    me: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AccountView"];
-                };
-            };
-        };
-    };
-    logout: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": boolean;
                 };
             };
         };

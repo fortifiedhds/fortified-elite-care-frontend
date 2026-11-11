@@ -1,109 +1,12 @@
-import { useState } from "react";
-import type { FormEvent, ReactNode } from "react";
-import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, HeartPulse, Stethoscope } from "lucide-react";
-import { api, messageFor, readResponse } from "./api/client";
-import type { Account, PatientInput } from "./api/client";
-import { Brand, ErrorMessage } from "./shared";
-
-type Props = { account: Account | null; onAccount: (account: Account) => void };
-
-function AuthLayout({
-  title,
-  subtitle,
-  children,
-}: {
-  title: string;
-  subtitle: string;
-  children: ReactNode;
-}) {
-  return (
-    <>
-      <header className="public-header">
-        <div className="wrap header-inner">
-          <Brand />
-          <Link className="text-link" to="/">
-            <ArrowLeft size={16} aria-hidden="true" /> Home
-          </Link>
-        </div>
-      </header>
-      <main className="auth-main" id="main-content">
-        <section className="auth-card">
-          <p className="eyebrow">FORTIFIED ELITE CARE</p>
-          <h1>{title}</h1>
-          <p className="muted">{subtitle}</p>
-          {children}
-        </section>
-      </main>
-    </>
-  );
-}
-
-export function Login({ account, onAccount }: Props) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  if (account) return <Navigate to="/portal" replace />;
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError("");
-    setBusy(true);
-    try {
-      onAccount(
-        readResponse(
-          await api.POST("/auth/login", { body: { email, password } }),
-        ),
-      );
-    } catch (error) {
-      setError(messageFor(error));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to your Fortified Elite Care account."
-    >
-      <form onSubmit={submit} className="stack">
-        <label>
-          Email address
-          <input
-            autoComplete="username"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Password
-          <input
-            autoComplete="current-password"
-            type="password"
-            minLength={12}
-            maxLength={128}
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
-        </label>
-        <ErrorMessage>{error}</ErrorMessage>
-        <button className="button primary" disabled={busy}>
-          {busy ? "Signing in…" : "Sign in"}
-          <ArrowRight size={17} aria-hidden="true" />
-        </button>
-      </form>
-      <p className="form-footer">
-        New to Fortified Elite Care?{" "}
-        <Link to="/register">Create an account</Link>
-      </p>
-    </AuthLayout>
-  );
-}
+import type { FormEvent } from "react";
+import { useState } from "react";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
+import type { PatientInput } from "../../shared/api/client";
+import { api, messageFor, readResponse } from "../../shared/api/client";
+import { ErrorMessage } from "../../shared/ui/Feedback";
+import { AuthLayout } from "./components/AuthLayout";
+import type { Props } from "./types";
 
 const consentChoices = [
   ["healthAssessment", "Routine health assessments"],
@@ -140,7 +43,14 @@ export function Register({ account, onAccount }: Props) {
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  if (account) return <Navigate to="/portal" replace />;
+  const [registeredPatient, setRegisteredPatient] = useState(false);
+  if (account)
+    return (
+      <Navigate
+        to={registeredPatient ? "/portal/registration" : "/portal"}
+        replace
+      />
+    );
 
   function update(key: keyof typeof details, value: string) {
     setDetails({ ...details, [key]: value });
@@ -182,18 +92,18 @@ export function Register({ account, onAccount }: Props) {
         const choices = Object.fromEntries(
           consentChoices.map(([key]) => [key, form.get(key) === "yes"]),
         ) as Pick<PatientInput, (typeof consentChoices)[number][0]>;
-        onAccount(
-          readResponse(
-            await api.POST("/auth/register/patient", {
-              body: {
-                ...base,
-                preferredDate,
-                sponsorName: sponsorName.trim() || undefined,
-                ...choices,
-              },
-            }),
-          ),
+        const patient = readResponse(
+          await api.POST("/auth/register/patient", {
+            body: {
+              ...base,
+              preferredDate,
+              sponsorName: sponsorName.trim() || undefined,
+              ...choices,
+            },
+          }),
         );
+        setRegisteredPatient(true);
+        onAccount(patient);
       }
     } catch (error) {
       setError(messageFor(error));
@@ -338,6 +248,11 @@ export function Register({ account, onAccount }: Props) {
           </>
         ) : (
           <div className="consent-list">
+            <p className="muted">
+              These are care choices. You can review them or name contacts for
+              sharing from your portal. Sponsor contact details do not grant
+              access.
+            </p>
             {consentChoices.map(([key, title]) => (
               <fieldset key={key}>
                 <legend>{title}</legend>
