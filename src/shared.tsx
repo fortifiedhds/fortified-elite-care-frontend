@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, CalendarDays, HeartPulse, Info } from "lucide-react";
+import { ArrowRight, CalendarDays, HeartPulse } from "lucide-react";
 
 export function Brand({ light = false }: { light?: boolean }) {
   return (
@@ -17,15 +17,6 @@ export function Brand({ light = false }: { light?: boolean }) {
         <small>BY FORTIFIED HDS</small>
       </span>
     </Link>
-  );
-}
-
-export function DemoNotice() {
-  return (
-    <div className="demo-notice">
-      <Info size={15} aria-hidden="true" /> Demo environment · Use fictional
-      information only
-    </div>
   );
 }
 

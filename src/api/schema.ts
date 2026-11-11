@@ -403,7 +403,7 @@ export interface components {
             decision: string;
         };
         PatientInput: {
-            /** @example patient@example.test */
+            /** Format: email */
             email: string;
             password: string;
             name: string;
@@ -420,17 +420,17 @@ export interface components {
             emergencyContact: boolean;
         };
         DoctorInput: {
-            /** @example patient@example.test */
+            /** Format: email */
             email: string;
             password: string;
             name: string;
             /** @example Ibadan North */
             area: string;
-            /** @example DEMO-001 */
+            /** @description Professional registration or licence number */
             credentialId: string;
         };
         LoginInput: {
-            /** @example patient@example.test */
+            /** Format: email */
             email: string;
             password: string;
         };

@@ -162,8 +162,8 @@ export function PublicHome({ signedIn }: { signedIn: boolean }) {
               health and give families a clearer picture of their care.
             </p>
             <div className="actions">
-              <Link className="button primary" to="/register">
-                Explore demo enrolment{" "}
+              <Link className="button primary" to="/register?role=patient">
+                Start patient enrolment{" "}
                 <ArrowRight size={18} aria-hidden="true" />
               </Link>
               <a className="button text" href="#how-it-works">
@@ -314,8 +314,7 @@ export function DoctorsPage({ signedIn }: { signedIn: boolean }) {
             and coordinated follow-up to older adults and their families.
           </p>
           <Link className="button primary" to="/register?role=doctor">
-            Explore the demo application{" "}
-            <ArrowRight size={18} aria-hidden="true" />
+            Apply as a doctor <ArrowRight size={18} aria-hidden="true" />
           </Link>
         </div>
         <div className="three-columns">

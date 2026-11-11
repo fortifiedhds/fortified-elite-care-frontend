@@ -14,14 +14,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { api, apiBase, messageFor, readResponse } from "./api/client";
 import type { Account, Dashboard, NoteInput, Visit } from "./api/client";
-import {
-  Brand,
-  dateLabel,
-  DemoNotice,
-  Empty,
-  ErrorMessage,
-  TextLink,
-} from "./shared";
+import { Brand, dateLabel, Empty, ErrorMessage, TextLink } from "./shared";
 
 type Action = (
   request: () => Promise<unknown>,
@@ -260,7 +253,7 @@ function PatientCheckups({
                 rows={3}
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
-                placeholder="Use a fictional reason"
+                placeholder="Tell the care team why you need another visit"
                 required
                 minLength={5}
                 maxLength={500}
@@ -411,7 +404,6 @@ function NoteForm({
           rows={3}
           maxLength={5000}
           defaultValue={visit.observations}
-          placeholder="Enter fictional observations only"
         />
       </label>
       <label>
@@ -421,13 +413,12 @@ function NoteForm({
           rows={3}
           maxLength={2000}
           defaultValue={visit.summary}
-          placeholder="Write a fictional summary for the reviewer"
         />
       </label>
       <ErrorMessage>{validation}</ErrorMessage>
       {confirming && (
         <p className="feedback" role="status">
-          Signing locks the note and completes this demo visit.
+          Signing locks the note and marks the visit as complete.
         </p>
       )}
       <div className="actions">
@@ -1094,7 +1085,6 @@ export function Portal({
 
   return (
     <div className="portal">
-      <DemoNotice />
       <header className="public-header">
         <div className="wrap header-inner">
           <Brand />

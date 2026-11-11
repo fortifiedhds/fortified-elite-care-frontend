@@ -473,21 +473,10 @@ details p {
 .doctors-page h1 {
   max-width: 17ch;
 }
-.demo-notice {
-  background: #e9edce;
-  padding: 8px 16px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  color: var(--dark);
-  font-size: 0.84rem;
-  font-weight: 620;
-}
 .auth-main {
   padding: clamp(25px, 5vw, 64px) 16px;
   background: radial-gradient(ellipse at top, #eaf1e5 0, transparent 65%);
-  min-height: calc(100dvh - 118px);
+  min-height: calc(100dvh - 78px);
 }
 .auth-card {
   display: grid;
@@ -567,17 +556,6 @@ legend {
 .role-options label:has(input:checked) {
   background: var(--tint);
   border-color: #8fa994;
-}
-.demo-accounts {
-  padding: 12px 15px;
-  border-radius: 13px;
-  background: var(--tint);
-}
-.demo-accounts p {
-  margin-bottom: 7px;
-}
-.capitalize {
-  text-transform: capitalize;
 }
 .form-footer {
   color: var(--muted);

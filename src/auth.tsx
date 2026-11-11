@@ -4,7 +4,7 @@ import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, HeartPulse, Stethoscope } from "lucide-react";
 import { api, messageFor, readResponse } from "./api/client";
 import type { Account, PatientInput } from "./api/client";
-import { Brand, DemoNotice, ErrorMessage } from "./shared";
+import { Brand, ErrorMessage } from "./shared";
 
 type Props = { account: Account | null; onAccount: (account: Account) => void };
 
@@ -19,7 +19,6 @@ function AuthLayout({
 }) {
   return (
     <>
-      <DemoNotice />
       <header className="public-header">
         <div className="wrap header-inner">
           <Brand />
@@ -67,7 +66,7 @@ export function Login({ account, onAccount }: Props) {
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Sign in to your Fortified Elite Care demo portal."
+      subtitle="Sign in to your Fortified Elite Care account."
     >
       <form onSubmit={submit} className="stack">
         <label>
@@ -98,30 +97,9 @@ export function Login({ account, onAccount }: Props) {
           <ArrowRight size={17} aria-hidden="true" />
         </button>
       </form>
-      <div className="demo-accounts">
-        <p>
-          <strong>Try a seeded account</strong>
-        </p>
-        <div className="actions">
-          {["patient", "doctor", "admin"].map((role) => (
-            <button
-              key={role}
-              type="button"
-              className="button small outline capitalize"
-              disabled={busy}
-              onClick={() => {
-                setEmail(`${role}@example.test`);
-                setPassword("Fec-Demo-Access-2026!");
-                setError("");
-              }}
-            >
-              {role}
-            </button>
-          ))}
-        </div>
-      </div>
       <p className="form-footer">
-        New to the demo? <Link to="/register">Create an account</Link>
+        New to Fortified Elite Care?{" "}
+        <Link to="/register">Create an account</Link>
       </p>
     </AuthLayout>
   );
@@ -144,16 +122,19 @@ function todayInLagos() {
 
 export function Register({ account, onAccount }: Props) {
   const [params] = useSearchParams();
-  const [role, setRole] = useState(
-    params.get("role") === "doctor" ? "doctor" : "patient",
+  const requestedRole = params.get("role");
+  const [role, setRole] = useState<"patient" | "doctor" | null>(
+    requestedRole === "patient" || requestedRole === "doctor"
+      ? requestedRole
+      : null,
   );
   const [step, setStep] = useState(1);
   const [details, setDetails] = useState({
     name: "",
     email: "",
     password: "",
-    area: "Ibadan North",
-    preferredDate: todayInLagos(),
+    area: "",
+    preferredDate: "",
     sponsorName: "",
     credentialId: "",
   });
@@ -168,6 +149,10 @@ export function Register({ account, onAccount }: Props) {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    if (!role) {
+      setError("Choose whether to enrol as a patient or apply as a doctor.");
+      return;
+    }
     if (role === "patient" && step === 1) {
       setStep(2);
       return;
@@ -219,11 +204,17 @@ export function Register({ account, onAccount }: Props) {
 
   return (
     <AuthLayout
-      title={step === 2 ? "Demo consent choices" : "Create a demo account"}
+      title={
+        step === 2
+          ? "Care permissions"
+          : role === "doctor"
+            ? "Doctor application"
+            : "Create an account"
+      }
       subtitle={
         step === 2
-          ? "These choices simulate the workflow. Use fictional information only."
-          : "Choose a role to explore the enrolment process."
+          ? "Choose what you agree to. The care team will review your choices during enrolment."
+          : "Enrol as a patient or apply to join as a doctor. The care team reviews each application."
       }
     >
       <form className="stack" onSubmit={submit}>
@@ -236,6 +227,7 @@ export function Register({ account, onAccount }: Props) {
                   type="radio"
                   name="role"
                   value="patient"
+                  required
                   checked={role === "patient"}
                   onChange={() => setRole("patient")}
                 />
@@ -246,99 +238,101 @@ export function Register({ account, onAccount }: Props) {
                   type="radio"
                   name="role"
                   value="doctor"
+                  required
                   checked={role === "doctor"}
                   onChange={() => setRole("doctor")}
                 />
                 <Stethoscope size={20} aria-hidden="true" /> Doctor
               </label>
             </fieldset>
-            <label>
-              Full name
-              <input
-                value={details.name}
-                onChange={(event) => update("name", event.target.value)}
-                required
-                minLength={2}
-                maxLength={100}
-                placeholder="Fictional name"
-              />
-            </label>
-            <label>
-              Demo email
-              <input
-                type="email"
-                autoComplete="username"
-                value={details.email}
-                onChange={(event) => update("email", event.target.value)}
-                pattern="[^@]+@example\.test"
-                placeholder="your-name@example.test"
-                required
-                maxLength={254}
-              />
-              <small>Use an address ending in @example.test.</small>
-            </label>
-            <label>
-              Password
-              <input
-                type="password"
-                autoComplete="new-password"
-                value={details.password}
-                onChange={(event) => update("password", event.target.value)}
-                minLength={12}
-                maxLength={128}
-                required
-              />
-              <small>Use at least 12 characters.</small>
-            </label>
-            <label>
-              Service area
-              <input
-                value={details.area}
-                onChange={(event) => update("area", event.target.value)}
-                required
-                minLength={2}
-                maxLength={100}
-              />
-            </label>
-            {role === "doctor" ? (
-              <label>
-                Demo credential reference
-                <input
-                  value={details.credentialId}
-                  onChange={(event) =>
-                    update("credentialId", event.target.value)
-                  }
-                  placeholder="DEMO-123"
-                  pattern="DEMO-[A-Z0-9\-]{2,50}"
-                  required
-                  maxLength={55}
-                />
-              </label>
-            ) : (
+            {role && (
               <>
                 <label>
-                  Preferred visit date
+                  Full name
                   <input
-                    type="date"
-                    min={todayInLagos()}
-                    value={details.preferredDate}
-                    onChange={(event) =>
-                      update("preferredDate", event.target.value)
-                    }
+                    value={details.name}
+                    onChange={(event) => update("name", event.target.value)}
                     required
-                  />
-                </label>
-                <label>
-                  Sponsor name <small>(optional)</small>
-                  <input
-                    value={details.sponsorName}
-                    onChange={(event) =>
-                      update("sponsorName", event.target.value)
-                    }
                     minLength={2}
                     maxLength={100}
                   />
                 </label>
+                <label>
+                  Email address
+                  <input
+                    type="email"
+                    autoComplete="username"
+                    value={details.email}
+                    onChange={(event) => update("email", event.target.value)}
+                    required
+                    maxLength={254}
+                  />
+                </label>
+                <label>
+                  Password
+                  <input
+                    type="password"
+                    autoComplete="new-password"
+                    value={details.password}
+                    onChange={(event) => update("password", event.target.value)}
+                    minLength={12}
+                    maxLength={128}
+                    required
+                  />
+                  <small>Use at least 12 characters.</small>
+                </label>
+                <label>
+                  {role === "doctor"
+                    ? "Area you cover for home visits"
+                    : "Area where you live"}
+                  <input
+                    value={details.area}
+                    onChange={(event) => update("area", event.target.value)}
+                    required
+                    minLength={2}
+                    maxLength={100}
+                  />
+                </label>
+                {role === "doctor" ? (
+                  <label>
+                    Professional registration or licence number
+                    <input
+                      value={details.credentialId}
+                      onChange={(event) =>
+                        update("credentialId", event.target.value)
+                      }
+                      required
+                      minLength={3}
+                      maxLength={80}
+                    />
+                  </label>
+                ) : (
+                  <>
+                    <label>
+                      Preferred visit date
+                      <input
+                        type="date"
+                        min={todayInLagos()}
+                        value={details.preferredDate}
+                        onChange={(event) =>
+                          update("preferredDate", event.target.value)
+                        }
+                        required
+                      />
+                    </label>
+                    <label>
+                      Sponsor name <small>(optional)</small>
+                      <input
+                        value={details.sponsorName}
+                        onChange={(event) =>
+                          update("sponsorName", event.target.value)
+                        }
+                        minLength={2}
+                        maxLength={100}
+                      />
+                    </label>
+                  </>
+                )}
               </>
             )}
           </>
@@ -376,14 +370,14 @@ export function Register({ account, onAccount }: Props) {
             {busy
               ? "Creating account…"
               : role === "patient" && step === 1
-                ? "Continue to demo consent"
-                : "Create demo account"}{" "}
+                ? "Continue to care permissions"
+                : "Submit application"}{" "}
             <ArrowRight size={17} aria-hidden="true" />
           </button>
         </div>
       </form>
       <p className="form-footer">
-        Already have a demo account? <Link to="/login">Sign in</Link>
+        Already have an account? <Link to="/login">Sign in</Link>
       </p>
     </AuthLayout>
   );
