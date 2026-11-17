@@ -60,7 +60,7 @@ export function JoinBand() {
   return (
     <div className="join-band">
       <div className="stack">
-        <p className="eyebrow">TAKE THE FIRST STEP</p>
+        {/* <p className="eyebrow">TAKE THE FIRST STEP</p> */}
         <h2>Let’s arrange your first visit.</h2>
         <p>Tell us a little about yourself and when you’d prefer to be seen.</p>
       </div>

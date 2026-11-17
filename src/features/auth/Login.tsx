@@ -65,7 +65,7 @@ export function Login({ account, onAccount }: Props) {
           <ArrowRight size={17} aria-hidden="true" />
         </button>
       </form>
-      <Link to="/account-help">Need help signing in?</Link>
+      {/* <Link to="/account-help">Need help signing in?</Link> */}
       <p className="form-footer">
         New to Fortified Elite Care?{" "}
         <Link to="/register">Create an account</Link>

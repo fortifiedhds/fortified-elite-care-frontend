@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { careEmail, carePhone } from "../../shared/lib/contact";
 import { PackageCards } from "../billing/PackageCards";
 import { FAQList, JoinBand, Start, Steps } from "./components/PublicContent";
+import { HeroArt, hasHeroArt } from "./components/HeroArt";
 import { Footer, PublicHeader } from "./components/PublicLayout";
 import { publicInfo } from "./content";
 
@@ -22,19 +23,31 @@ export function PublicPage({
   signedIn: boolean;
 }) {
   const [tag, title, detail] = publicInfo[page];
+  const art = hasHeroArt(page) ? page : null;
   return (
     <>
       <PublicHeader signedIn={signedIn} />
       <main id="main-content" className="page-enter">
-        <section className="sub-hero">
-          <div className="wrap stack">
-            <p className="eyebrow">{tag.toUpperCase()}</p>
-            <h1>{title}</h1>
-            <p className="lede">{detail}</p>
-            {page === "for-doctors" && (
-              <Start role="doctor" label="Apply as a doctor" />
-            )}
-            {(page === "how-it-works" || page === "for-families") && <Start />}
+        <section
+          className={
+            art
+              ? `sub-hero has-art ${art === "how-it-works" ? "has-frame" : "has-cutout"}`
+              : "sub-hero"
+          }
+        >
+          <div className={art ? "wrap sub-hero-grid" : "wrap stack"}>
+            <div className="stack sub-hero-copy">
+              {/* <p className="eyebrow">{tag.toUpperCase()}</p> */}
+              <h1>{title}</h1>
+              <p className="lede">{detail}</p>
+              {page === "for-doctors" && (
+                <Start role="doctor" label="Apply as a doctor" />
+              )}
+              {(page === "how-it-works" || page === "for-families") && (
+                <Start />
+              )}
+            </div>
+            {art && <HeroArt page={art} />}
           </div>
         </section>
         <section className="wrap section stack">
@@ -50,7 +63,7 @@ export function PublicPage({
           {page === "services" && (
             <>
               <div className="section-intro" id="packages">
-                <p className="eyebrow">CARE PACKAGES</p>
+                {/* <p className="eyebrow">CARE PACKAGES</p> */}
                 <h2>What’s included in each package</h2>
               </div>
               <PackageCards />

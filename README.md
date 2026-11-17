@@ -22,4 +22,4 @@ Use `Copy-Item .env.example .env` in PowerShell. Open `http://127.0.0.1:5173`.
 - `npm run build` typechecks and builds the SPA.
 - `npm run generate:api` rebuilds the client schema from the sibling backend's `openapi.json`.
 
-See the [documentation index](docs/README.md) for structure, routes, API usage, styling and the local workflow. The design handoff is in the parent workspace at `design/fec-redesign`.
+See the [documentation index](docs/README.md) for structure, routes, API usage, styling and the local workflow.

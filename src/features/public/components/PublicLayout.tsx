@@ -25,21 +25,25 @@ export function PublicHeader({ signedIn }: { signedIn: boolean }) {
           aria-label="Main navigation"
           onClick={() => setMenu(false)}
         >
-          <NavLink to="/how-it-works">How it works</NavLink>
-          <NavLink to="/services">Services</NavLink>
-          <NavLink to="/for-families">For families</NavLink>
-          <NavLink to="/for-doctors">For doctors</NavLink>
-          <NavLink to="/faq">FAQ</NavLink>
-          <Link
-            className="button small outline"
-            to={signedIn ? "/portal" : "/login"}
-          >
-            {signedIn ? "My portal" : "Sign in"}
-          </Link>
+          <div className="public-nav-links">
+            <NavLink to="/how-it-works">How it works</NavLink>
+            <NavLink to="/about">About</NavLink>
+            <NavLink to="/services">Services</NavLink>
+            <NavLink to="/for-families">For families</NavLink>
+            <NavLink to="/for-doctors">For doctors</NavLink>
+          </div>
+          <div className="public-nav-actions">
+            <Link
+              className="button outline"
+              to={signedIn ? "/portal" : "/login"}
+            >
+              {signedIn ? "My portal" : "Sign in"}
+            </Link>
+            <Link to="/for-families" className="button primary">
+              Explore care <ArrowRight size={17} aria-hidden="true" />
+            </Link>
+          </div>
         </nav>
-        <Link to="/for-families" className="button primary public-header-cta">
-          Explore care <ArrowRight size={17} aria-hidden="true" />
-        </Link>
       </div>
     </header>
   );
@@ -70,7 +74,7 @@ export function Footer() {
         </nav>
       </div>
       <div className="wrap footer-base">
-        <span>Fortified Elite Care</span>
+        <span>© Copyright 2026 Fortified Elite Care. All rights reserved.</span>
         <span>
           Routine care only. For emergencies, seek immediate medical care.
         </span>

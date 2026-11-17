@@ -15,13 +15,23 @@ export function AuthLayout({
   return (
     <div className="auth-shell">
       <aside className="auth-story">
+        <img
+          className="auth-story-photo"
+          src="/home-visit-1400.jpg"
+          srcSet="/home-visit-900.jpg 900w, /home-visit-1400.jpg 1400w, /home-visit-1800.jpg 1800w"
+          sizes="(max-width: 800px) 1px, 45vw"
+          alt=""
+          width={1800}
+          height={1200}
+        />
         <Brand light />
-        <p className="eyebrow">FORTIFIED ELITE CARE</p>
-        <h2>
-          Good care <em>feels closer.</em>
-        </h2>
-        <p>One place to arrange home visits and see what comes next.</p>
-        <img src="/home-visit.jpg" alt="" width={6000} height={4000} />
+        <div className="auth-story-copy">
+          {/* <p className="eyebrow">FORTIFIED ELITE CARE</p> */}
+          <h2>
+            Good care <em>feels closer.</em>
+          </h2>
+          <p>One place to arrange home visits and see what comes next.</p>
+        </div>
       </aside>
       <main className="auth-main page-enter" id="main-content">
         <section className="auth-card">

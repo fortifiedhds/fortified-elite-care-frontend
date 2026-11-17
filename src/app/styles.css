@@ -221,18 +221,35 @@ p {
 }
 .public-nav {
   display: flex;
+  flex: 1;
   align-items: center;
-  gap: clamp(16px, 3vw, 37px);
+  gap: 24px;
 }
-.public-nav > a:not(.button) {
+.public-nav-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 30px);
+  margin-inline: auto;
+}
+.public-nav-links > a {
   text-decoration: none;
-  color: var(--muted);
+  color: var(--ink);
   font-size: 0.93rem;
-  font-weight: 600;
+  font-weight: 700;
 }
-.public-nav > a:hover {
+.public-nav-links > a:hover {
   text-decoration: underline;
   text-underline-offset: 5px;
+}
+.public-nav-links > a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 7px;
+}
+.public-nav-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 .mobile-menu {
   display: none;
@@ -407,6 +424,7 @@ p {
 .faq {
   display: grid;
   grid-template-columns: 0.7fr 1fr;
+  align-items: start;
   gap: 22px;
 }
 details {
@@ -782,21 +800,6 @@ legend {
   .header-inner {
     min-height: 65px;
   }
-  .mobile-menu {
-    display: inline-flex;
-  }
-  .public-nav {
-    display: none;
-    position: absolute;
-    inset: 100% 0 auto;
-    background: white;
-    border-bottom: 1px solid var(--border);
-    padding: 18px;
-    align-items: start;
-  }
-  .public-nav.open {
-    display: grid;
-  }
   .hero {
     grid-template-columns: 1fr;
     padding-block: 37px;
@@ -865,8 +868,8 @@ h2 {
   text-wrap: balance;
 }
 .brand img {
-  width: 166px;
-  height: auto;
+  width: auto;
+  height: 51px;
   flex-shrink: 0;
 }
 .wrap {
@@ -875,18 +878,6 @@ h2 {
 .public-header,
 .hero-band {
   background: var(--cream);
-}
-.public-nav {
-  gap: clamp(14px, 2vw, 30px);
-}
-.public-nav > a:not(.button) {
-  color: var(--ink);
-  font-weight: 700;
-}
-.public-nav > a[aria-current="page"] {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 7px;
 }
 .button {
   transition:
@@ -1052,6 +1043,382 @@ h2 {
 .sub-hero h1 {
   max-width: 22ch;
 }
+
+/* ---- Sub-page hero artwork (how-it-works, for-families, for-doctors) ---- */
+.sub-hero.has-art {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 40%, #ffffff8c 0, #ffffff00 38%), var(--tint);
+}
+.sub-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+}
+.sub-hero.has-art h1 {
+  max-width: 15ch;
+  font-size: clamp(2.5rem, 4.4vw, 4.1rem);
+}
+/* Cut-outs stand on the bottom edge of the band */
+.sub-hero.has-cutout {
+  padding-bottom: 0;
+}
+.has-cutout .sub-hero-grid {
+  align-items: end;
+}
+.has-cutout .sub-hero-copy {
+  align-self: center;
+  padding-bottom: clamp(42px, 6vw, 70px);
+}
+.hero-art {
+  position: relative;
+  animation: fec-art-in 0.7s var(--ease) 0.06s both;
+}
+.hero-art img {
+  display: block;
+}
+.art-dots {
+  position: absolute;
+  z-index: 0;
+  width: 132px;
+  height: 132px;
+  background: radial-gradient(var(--brand) 1.6px, transparent 1.8px) 0 0 / 15px
+    15px;
+  opacity: 0.22;
+  pointer-events: none;
+}
+.art-ring {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.art-chip {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: max-content;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 10px 34px #2314362e;
+  font-size: 0.9rem;
+  animation: fec-float 6s ease-in-out infinite;
+}
+.art-chip.chip-a {
+  padding: 9px 15px 9px 9px;
+}
+.art-chip.chip-a strong,
+.art-chip.chip-a small {
+  display: block;
+}
+.art-chip.chip-a small {
+  margin-top: 2px;
+  color: var(--muted);
+}
+.art-chip.chip-b {
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-weight: 650;
+  color: var(--dark);
+  animation-delay: -3s;
+}
+.art-chip.chip-b svg {
+  color: var(--brand);
+}
+
+/* Cut-out portraits: the figure "pops out" of a brand arch. The arch is the
+   exact width of the image, so the photo's flat side and bottom edges line up
+   with the arch's straight sides and the band's bottom edge. */
+.hero-art.cutout {
+  justify-self: center;
+}
+.art-stage {
+  position: relative;
+  width: var(--stage-w);
+}
+.art-stage > img {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: auto;
+}
+.art-arch {
+  position: absolute;
+  z-index: 1;
+  inset: auto 0 0 0;
+}
+/* For doctors: deep purple arch behind the white coat */
+.art-doctor {
+  --stage-w: clamp(250px, 27vw, 340px);
+}
+.art-doctor .art-arch {
+  height: 86%;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(160deg, var(--brand), var(--dark));
+}
+.art-doctor .art-ring {
+  top: 2%;
+  right: -22%;
+  width: 62%;
+  aspect-ratio: 1;
+  border: 14px solid var(--peach);
+  opacity: 0.85;
+}
+.art-doctor .art-dots {
+  top: 10%;
+  left: -28%;
+}
+.art-doctor .chip-a {
+  left: -32%;
+  top: 56%;
+}
+.art-doctor .chip-b {
+  right: -20%;
+  top: 30%;
+}
+/* For families: warm peach arch behind the red jumper */
+.art-family {
+  --stage-w: clamp(300px, 38vw, 480px);
+}
+.art-family .art-arch {
+  height: 84%;
+  border-radius: 50% 50% 0 0 / 52% 52% 0 0;
+  background: linear-gradient(165deg, #ffe0cf, var(--peach));
+}
+.art-family .art-ring {
+  top: -3%;
+  left: -7%;
+  width: 34%;
+  aspect-ratio: 1;
+  border: 3px dashed var(--brand);
+  opacity: 0.45;
+}
+.art-family .art-dots {
+  right: -6%;
+  top: 4%;
+}
+.art-family .chip-a {
+  left: -12%;
+  top: 40%;
+}
+.art-family .chip-b {
+  right: -6%;
+  bottom: 13%;
+}
+
+/* How it works: framed photo with layered offset, spinning stamp and a
+   mini care-journey tracker */
+.hero-art.framed {
+  justify-self: end;
+  width: min(100%, 560px);
+  padding: 20px 24px 30px 0;
+}
+.art-journey .art-dots {
+  top: -14px;
+  left: -30px;
+}
+.art-offset,
+.art-photo {
+  border-radius: 210px 28px 210px 28px;
+}
+.art-offset {
+  position: absolute;
+  z-index: 0;
+  inset: 20px 24px 30px 0;
+  transform: translate(22px, 26px);
+  background: var(--peach);
+}
+.art-photo {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  aspect-ratio: 1.08;
+  box-shadow: 0 22px 50px #30234d2e;
+}
+.art-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 58% center;
+}
+.art-stamp {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 108px;
+  aspect-ratio: 1;
+  border: 4px solid var(--tint);
+  border-radius: 50%;
+  background: var(--dark);
+  color: var(--peach);
+}
+.art-stamp-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--cream);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  animation: fec-spin 26s linear infinite;
+}
+.art-stamp-icon {
+  position: relative;
+  z-index: 1;
+}
+.art-tracker {
+  position: absolute;
+  z-index: 2;
+  left: -36px;
+  bottom: 6px;
+  display: grid;
+  gap: 10px;
+  width: 214px;
+  padding: 14px 16px 16px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 38px #2314362e;
+  animation: fec-float 7s ease-in-out infinite;
+}
+.art-tracker .eyebrow {
+  font-size: 0.64rem;
+}
+.art-tracker ol {
+  display: grid;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.art-tracker li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.art-tracker li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 25px;
+  width: 2px;
+  height: 9px;
+  background: var(--border);
+}
+.art-tracker li > span {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.art-tracker li.is-done {
+  color: var(--ink);
+}
+.art-tracker li.is-done > span {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: #fff;
+}
+.art-tracker li.is-done::after {
+  background: var(--brand);
+}
+.art-tracker li.is-current {
+  color: var(--ink);
+}
+.art-tracker li.is-current > span {
+  border-color: var(--peach);
+  background: var(--peach);
+  color: var(--dark);
+  animation: fec-pulse 2.4s ease-out infinite;
+}
+@keyframes fec-art-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+@keyframes fec-float {
+  50% {
+    transform: translateY(-7px);
+  }
+}
+@keyframes fec-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes fec-pulse {
+  0% {
+    box-shadow: 0 0 0 0 #ffbc9cb3;
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 9px #ffbc9c00;
+  }
+}
+@media (max-width: 800px) {
+  .sub-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+  .has-cutout .sub-hero-copy {
+    padding-bottom: 0;
+  }
+  .hero-art.framed {
+    justify-self: center;
+    width: min(100%, 480px);
+    margin-bottom: 10px;
+  }
+  .art-tracker {
+    left: -8px;
+  }
+  .art-doctor {
+    --stage-w: 260px;
+  }
+  .art-family {
+    --stage-w: min(340px, 82vw);
+  }
+}
+@media (max-width: 570px) {
+  .art-chip.chip-b {
+    display: none;
+  }
+  .art-chip {
+    font-size: 0.82rem;
+  }
+  .art-doctor .chip-a {
+    left: -18%;
+  }
+  .art-family .chip-a {
+    left: -4%;
+    top: 34%;
+  }
+  .art-stamp {
+    width: 86px;
+  }
+  .art-stamp-ring {
+    font-size: 10px;
+  }
+  .art-tracker {
+    width: 186px;
+    padding: 11px 13px 13px;
+  }
+}
 .footer-grid > nav {
   display: grid;
   align-content: start;
@@ -1067,31 +1434,64 @@ h2 {
   background: var(--paper);
 }
 .auth-story {
-  display: grid;
-  justify-items: start;
-  align-content: start;
-  gap: 22px;
-  padding: clamp(25px, 5vw, 67px);
+  position: sticky;
+  top: 0;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  height: 100dvh;
+  padding: clamp(25px, 4vw, 56px);
   background: var(--dark);
   color: white;
+}
+/* Full-bleed photo with a brand-coloured fade so the copy stays readable */
+.auth-story::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, #30234d99 0%, #30234d00 22%),
+    linear-gradient(
+      0deg,
+      #30234df2 0%,
+      #30234dcc 30%,
+      #30234d33 62%,
+      #30234d00 80%
+    );
+}
+.auth-story > .auth-story-photo {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 45% center;
+}
+.auth-story-copy {
+  display: grid;
+  gap: 16px;
 }
 .auth-story .eyebrow {
   color: var(--peach);
 }
 .auth-story h2 {
   max-width: 11ch;
-  font-size: clamp(2.75rem, 5.4vw, 5.25rem);
+  font-size: clamp(2.5rem, 4.6vw, 4.5rem);
   line-height: 0.95;
+  text-shadow: 0 2px 24px #30234d66;
+}
+.auth-story h2 em {
+  color: var(--peach);
 }
 .auth-story p:not(.eyebrow) {
   max-width: 42ch;
-  color: #eadff1;
-}
-.auth-story > img {
-  width: min(100%, 480px);
-  height: clamp(190px, 27vw, 330px);
-  object-fit: cover;
-  border-radius: 45% 45% 20px 20px;
+  color: #f3ecf8;
 }
 .auth-shell .auth-main {
   min-height: 0;
@@ -1276,8 +1676,32 @@ h2 {
   }
 }
 @media (max-width: 1050px) {
-  .public-header-cta {
+  .mobile-menu {
+    display: inline-flex;
+  }
+  .public-nav {
     display: none;
+    position: absolute;
+    inset: 100% 0 auto;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+    padding: 12px clamp(16px, 3vw, 24px) 18px;
+  }
+  .public-nav.open {
+    display: grid;
+  }
+  .public-nav-links {
+    display: grid;
+    gap: 0;
+    margin-inline: 0;
+  }
+  .public-nav-links > a {
+    padding-block: 10px;
+  }
+  .public-nav-actions {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
   }
   .portal-layout {
     grid-template-columns: 202px minmax(0, 1fr);
@@ -1309,14 +1733,17 @@ h2 {
     grid-template-columns: 1fr;
   }
   .auth-story {
+    position: static;
     display: block;
+    height: auto;
     padding: 12px 18px;
   }
+  .auth-story::after,
   .auth-story > :not(.brand) {
     display: none;
   }
   .auth-story .brand img {
-    width: 145px;
+    height: 44px;
   }
   .portal-layout {
     grid-template-columns: 1fr;
@@ -1343,7 +1770,7 @@ h2 {
     gap: 6px;
   }
   .portal .header-inner .brand img {
-    width: 124px;
+    height: 38px;
   }
   .portal .header-inner > .button {
     padding-inline: 10px;
@@ -1395,7 +1822,12 @@ h2 {
 }
 @media (prefers-reduced-motion: reduce) {
   .page-enter,
-  .step-enter {
+  .step-enter,
+  .hero-art,
+  .art-chip,
+  .art-tracker,
+  .art-stamp-ring,
+  .art-tracker li.is-current > span {
     animation: none;
   }
   .button {

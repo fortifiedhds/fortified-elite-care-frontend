@@ -19,9 +19,9 @@ export function PublicHome({ signedIn }: { signedIn: boolean }) {
         <div className="hero-band">
           <section className="wrap hero">
             <div className="hero-copy">
-              <p className="eyebrow">
+              {/* <p className="eyebrow">
                 <span /> DOCTOR-LED HOME HEALTHCARE · AGES 60+
-              </p>
+              </p> */}
               <h1>
                 Good care <em>feels closer.</em>
               </h1>
@@ -37,17 +37,19 @@ export function PublicHome({ signedIn }: { signedIn: boolean }) {
                 </Link>
               </div>
               <p className="hero-note">
-                <ShieldCheck size={17} aria-hidden="true" />
+                {/* <ShieldCheck size={17} aria-hidden="true" /> */}
                 Routine care for older adults. For emergencies, seek immediate
                 medical care.
               </p>
             </div>
             <figure className="hero-image">
               <img
-                src="/home-visit.jpg"
+                src="/home-visit-1400.jpg"
+                srcSet="/home-visit-900.jpg 900w, /home-visit-1400.jpg 1400w, /home-visit-1800.jpg 1800w"
+                sizes="(max-width: 900px) 100vw, 900px"
                 alt="A healthcare professional checks an older adult’s blood pressure during a home visit"
-                width={6000}
-                height={4000}
+                width={1800}
+                height={1200}
                 fetchPriority="high"
               />
               <span className="hero-stamp" aria-hidden="true">
@@ -84,7 +86,7 @@ export function PublicHome({ signedIn }: { signedIn: boolean }) {
         </div>
         <section className="wrap section">
           <div className="section-intro">
-            <p className="eyebrow">HOW IT WORKS</p>
+            {/* <p className="eyebrow">HOW IT WORKS</p> */}
             <h2>From enrolment to your first checkup</h2>
             <p>
               A straightforward process, with someone to help at every step.
@@ -95,7 +97,7 @@ export function PublicHome({ signedIn }: { signedIn: boolean }) {
         <section className="package-section" id="packages">
           <div className="wrap section">
             <div className="section-intro">
-              <p className="eyebrow">CARE PACKAGES</p>
+              {/* <p className="eyebrow">CARE PACKAGES</p> */}
               <h2>Choose the level of support you need</h2>
               <p>
                 Each package includes monthly home visits. Ask the care team
@@ -107,7 +109,7 @@ export function PublicHome({ signedIn }: { signedIn: boolean }) {
         </section>
         <section className="wrap section faq">
           <div className="section-intro">
-            <p className="eyebrow">COMMON QUESTIONS</p>
+            {/* <p className="eyebrow">COMMON QUESTIONS</p> */}
             <h2>Before you get started</h2>
             <Link to="/faq" className="button outline">
               See all questions
