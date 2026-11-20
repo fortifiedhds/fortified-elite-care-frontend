@@ -17,6 +17,7 @@ import type { Challenge } from "./VerificationForm";
 export function VerifyEmail({ onAccount }: Pick<Props, "onAccount">) {
   const [challenge, setChallenge] = useState<Challenge>();
   const [error, setError] = useState("");
+  const [attempt, setAttempt] = useState(0);
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const location = useLocation();
@@ -24,8 +25,14 @@ export function VerifyEmail({ onAccount }: Pick<Props, "onAccount">) {
     challenge?.purpose === "ADMIN_LOGIN" ||
     params.get("admin") === "1" ||
     location.pathname.startsWith(adminConsolePath + "/");
+  const registrationRole = location.state?.registrationRole;
+  const registrationHref =
+    !admin && (registrationRole === "patient" || registrationRole === "doctor")
+      ? `/register?role=${registrationRole}`
+      : null;
   useEffect(() => {
     const controller = new AbortController();
+    setError("");
     void api
       .GET("/auth/challenge", { signal: controller.signal })
       .then((result) => {
@@ -35,7 +42,7 @@ export function VerifyEmail({ onAccount }: Pick<Props, "onAccount">) {
         if (!controller.signal.aborted) setError(messageFor(error));
       });
     return () => controller.abort();
-  }, []);
+  }, [attempt]);
   return (
     <AuthLayout
       title="Check your email."
@@ -67,6 +74,22 @@ export function VerifyEmail({ onAccount }: Pick<Props, "onAccount">) {
         />
       ) : (
         !error && <p role="status">Loading verification…</p>
+      )}
+      {error && !challenge && (
+        <div className="actions">
+          <button
+            type="button"
+            className="button outline"
+            onClick={() => setAttempt((value) => value + 1)}
+          >
+            Try again
+          </button>
+          {registrationHref && (
+            <Link className="button primary" to={registrationHref}>
+              Restart registration
+            </Link>
+          )}
+        </div>
       )}
       <Link to={admin ? siteHref("admin", adminConsolePath) : "/login"}>
         Back to sign in

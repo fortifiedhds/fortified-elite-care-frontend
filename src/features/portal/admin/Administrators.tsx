@@ -1,3 +1,4 @@
+import { PasswordInput } from "../../../shared/ui/PasswordInput";
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { api, messageFor, readResponse } from "../../../shared/api/client";
@@ -135,9 +136,9 @@ export function Administrators({
                 </label>
                 <label>
                   Initial password
-                  <input
+                  <PasswordInput
                     name="password"
-                    type="password"
+                    visibilityLabel="initial password"
                     autoComplete="new-password"
                     required
                     minLength={12}

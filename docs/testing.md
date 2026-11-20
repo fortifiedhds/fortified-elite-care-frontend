@@ -1,5 +1,7 @@
 # Testing
 
+`test/unit/password-input-verification.test.tsx` covers default masking, keyboard/mouse toggles, unchanged password values, no accidental form submission, disabled controls, all password-bearing screens, challenge retries and registration recovery. OTP verification remains bound to the server challenge.
+
 The unit suite uses Vitest, jsdom and React Testing Library. It mounts route or feature components using React Router's memory router and mocks the API client. It does not need a live browser, API or database.
 
 | Command                                           | Use                                                         |

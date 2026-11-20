@@ -1,3 +1,4 @@
+import { PasswordInput } from "../../shared/ui/PasswordInput";
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { api, messageFor, readResponse } from "../../shared/api/client";
@@ -103,8 +104,8 @@ export function Settings() {
           {security.hasPassword && (
             <label>
               Current password
-              <input
-                type="password"
+              <PasswordInput
+                visibilityLabel="current password"
                 autoComplete="current-password"
                 minLength={12}
                 maxLength={128}
@@ -118,8 +119,8 @@ export function Settings() {
           )}
           <label>
             New password
-            <input
-              type="password"
+            <PasswordInput
+              visibilityLabel="new password"
               autoComplete="new-password"
               minLength={12}
               maxLength={128}
@@ -132,8 +133,8 @@ export function Settings() {
           </label>
           <label>
             Confirm new password
-            <input
-              type="password"
+            <PasswordInput
+              visibilityLabel="confirm new password"
               autoComplete="new-password"
               minLength={12}
               maxLength={128}

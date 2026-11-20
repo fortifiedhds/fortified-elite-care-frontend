@@ -981,6 +981,36 @@ input[type="radio"] {
   height: 17px;
   margin: 0;
 }
+.password-field {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+.password-field input:not([type="radio"]):not([type="checkbox"]) {
+  padding-right: 54px;
+}
+.password-visibility {
+  position: absolute;
+  top: 50%;
+  right: 1px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--brand-strong);
+}
+.password-visibility:hover:not(:disabled) {
+  background: var(--tint);
+}
+.password-visibility:focus-visible {
+  outline-offset: -3px;
+}
 textarea {
   resize: vertical;
 }

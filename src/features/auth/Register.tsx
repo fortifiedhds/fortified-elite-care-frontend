@@ -1,3 +1,4 @@
+import { PasswordInput } from "../../shared/ui/PasswordInput";
 import { ArrowLeft, ArrowRight, HeartPulse, Stethoscope } from "lucide-react";
 import type { FormEvent } from "react";
 import { useState } from "react";
@@ -44,8 +45,11 @@ export function Register({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [registeredPatient, setRegisteredPatient] = useState(false);
-  const [verification, setVerification] = useState(false);
-  if (verification) return <Navigate to="/verify-email" replace />;
+  const [verification, setVerification] = useState<{
+    registrationRole: "patient" | "doctor";
+  }>();
+  if (verification)
+    return <Navigate to="/verify-email" state={verification} replace />;
   if (account)
     return (
       <Navigate
@@ -92,7 +96,7 @@ export function Register({
                 body: { ...base, credentialId },
               }),
         );
-        if (result.challenge) setVerification(true);
+        if (result.challenge) setVerification({ registrationRole: role });
         else if (result.account) onAccount(result.account);
       } else {
         const choices = Object.fromEntries(
@@ -118,7 +122,7 @@ export function Register({
                 },
               }),
         );
-        if (result.challenge) setVerification(true);
+        if (result.challenge) setVerification({ registrationRole: role });
         else if (result.account) {
           setRegisteredPatient(true);
           onAccount(result.account);
@@ -201,8 +205,7 @@ export function Register({
                 {!googleProfile && (
                   <label>
                     Password
-                    <input
-                      type="password"
+                    <PasswordInput
                       autoComplete="new-password"
                       value={details.password}
                       onChange={(event) =>

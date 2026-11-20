@@ -94,7 +94,9 @@ describe("public contact form", () => {
     expect(screen.getByRole("status").textContent).toContain(
       "ada@example.test",
     );
-    expect(document.activeElement).toBe(screen.getByRole("status"));
+    await waitFor(() =>
+      expect(document.activeElement).toBe(screen.getByRole("status")),
+    );
     fireEvent.click(
       screen.getByRole("button", { name: "Send another message" }),
     );

@@ -1,3 +1,4 @@
+import { PasswordInput } from "../../shared/ui/PasswordInput";
 import { ArrowRight } from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
@@ -117,9 +118,9 @@ export function Login({
         </label>
         <label>
           Password
-          <input
+          <PasswordInput
             autoComplete="current-password"
-            type="password"
+
             minLength={12}
             maxLength={128}
             value={password}

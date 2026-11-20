@@ -1,5 +1,15 @@
 # Authentication, administrator console and documents
 
+## Password visibility
+
+All password fields use `src/shared/ui/PasswordInput.tsx`: public/admin sign-in, patient/doctor registration, current/new/confirmation passwords in Settings, and initial administrator passwords. Fields start masked. Each eye button toggles its own field, preserves the value and autocomplete behavior, has a keyboard-accessible Show/Hide label and pressed state, and uses `type="button"` to avoid submitting the form. Visibility is local component state and is not persisted.
+
+## Verification recovery
+
+The verification page fetches the browser-bound challenge before displaying the code input. Email delivery alone does not replace that binding. A failed lookup offers **Try again**; signup also offers **Restart registration** for the originally selected patient or doctor role. Router state carries only the selected role. Administrator recovery continues to use the console sign-in route.
+
+For direct Vercel-to-Render requests, set `NODE_ENV=production` and `COOKIE_SAME_SITE=none` on the backend, redeploy and start a fresh signup/sign-in request. The API client already includes credentials. CORS approval does not override SameSite restrictions, and browsers that block third-party cookies can still reject `SameSite=None`. The shared-domain MVP avoids that cross-site dependency.
+
 ## Frontend routes
 
 | Route                                | Entry and behavior                                                                                      |
