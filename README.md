@@ -25,3 +25,7 @@ Use `Copy-Item .env.example .env` in PowerShell. Open `http://127.0.0.1:5173`.
 See the [documentation index](docs/README.md) for structure, routes, API usage, styling and the local workflow.
 
 The administrator console opens at `/console-7c6e4b9f2a83`. Follow [authentication and administrators](docs/authentication-and-admin.md) for Google onboarding, mailbox verification, password settings and private documents. Initial administrator credentials, SMTP, Google OAuth and Cloudinary are configured in the sibling backend.
+
+## Deployment
+
+For Vercel, use `npm run build` as the build command and `dist` as the output directory. Set `VITE_API_URL` to the hosted API base URL, including `/api/v1`, before building. Redeploy after changing build-time environment variables. The committed `vercel.json` handles direct navigation to application routes; see [domains and deployment](docs/domains-and-deployment.md) for the hosting configuration.
