@@ -1,4 +1,5 @@
 import type { Dashboard } from "../../../shared/api/client";
+import { canAdmin } from "../permissions";
 import { api, pathParams, readResponse } from "../../../shared/api/client";
 import { Empty } from "../../../shared/ui/Feedback";
 import { Panel } from "../components/Panel";
@@ -30,7 +31,8 @@ export function AdminVisits({
             );
             return (
               <VisitRow visit={visit} key={visit.id}>
-                {visit.status !== "COMPLETED" &&
+                {canAdmin(data.account, "VISITS_MANAGE") &&
+                  visit.status !== "COMPLETED" &&
                   visit.date >= data.serviceToday &&
                   doctors.length > 0 && (
                     <form
@@ -85,26 +87,27 @@ export function AdminVisits({
                     {visit.summary && (
                       <p className="preserve">{visit.summary}</p>
                     )}
-                    {!visit.published && data.account.clinicalReviewer && (
-                      <button
-                        className="button primary small"
-                        disabled={busy}
-                        onClick={() =>
-                          void act(
-                            async () =>
-                              readResponse(
-                                await api.POST(
-                                  "/admin/visits/{id}/publish",
-                                  pathParams(visit.id),
+                    {!visit.published &&
+                      canAdmin(data.account, "SUMMARIES_PUBLISH") && (
+                        <button
+                          className="button primary small"
+                          disabled={busy}
+                          onClick={() =>
+                            void act(
+                              async () =>
+                                readResponse(
+                                  await api.POST(
+                                    "/admin/visits/{id}/publish",
+                                    pathParams(visit.id),
+                                  ),
                                 ),
-                              ),
-                            "Summary released to the patient.",
-                          )
-                        }
-                      >
-                        Release summary
-                      </button>
-                    )}
+                              "Summary released to the patient.",
+                            )
+                          }
+                        >
+                          Release summary
+                        </button>
+                      )}
                   </div>
                 )}
               </VisitRow>

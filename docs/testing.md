@@ -12,6 +12,8 @@ The unit suite uses Vitest, jsdom and React Testing Library. It mounts route or 
 
 ## Suites
 
+- [Identity and settings](../test/unit/identity-settings.test.tsx) covers Google availability and onboarding, passwordless guidance, OTP errors, cooldown and expiry, create/change password, console login, permission-filtered navigation, administrator creation and document uploads.
+
 - [App, auth and public](../test/unit/app-auth-public.test.tsx) covers session gating, public route rendering, navigation, patient and doctor applications, sign-in and failures, and shared response and date behavior.
 - [Forms and billing](../test/unit/forms-billing.test.tsx) covers draft/resume, field interactions, retries, stale saves, read-only submissions, patient and clinician baselines, care choices and sharing, consultation addenda, admin registration review, quotes, and the service agreement state.
 - [Portal](../test/unit/portal.test.tsx) covers role views, dashboard refresh and errors, sign-out, visit requests and preferences, appointments, extra visits, claims, note drafting and signing, admin assignment and release, enrolment and notification read actions.

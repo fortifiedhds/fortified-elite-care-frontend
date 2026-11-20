@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Brand } from "../../../shared/ui/Brand";
+import { siteHref } from "../../../shared/lib/sites";
 
 export function AuthLayout({
   title,
@@ -17,12 +18,12 @@ export function AuthLayout({
       <aside className="auth-story">
         <img
           className="auth-story-photo"
-          src="/home-visit-1400.jpg"
-          srcSet="/home-visit-900.jpg 900w, /home-visit-1400.jpg 1400w, /home-visit-1800.jpg 1800w"
+          src="/hero/how-it-works-1400.jpg"
+          srcSet="/hero/how-it-works-900.jpg 900w, /hero/how-it-works-1400.jpg 1400w"
           sizes="(max-width: 800px) 1px, 45vw"
           alt=""
-          width={1800}
-          height={1200}
+          width={1400}
+          height={933}
         />
         <Brand light />
         <div className="auth-story-copy">
@@ -35,7 +36,10 @@ export function AuthLayout({
       </aside>
       <main className="auth-main page-enter" id="main-content">
         <section className="auth-card">
-          <Link className="text-link auth-content-back" to="/">
+          <Link
+            className="text-link auth-content-back"
+            to={siteHref("public", "/")}
+          >
             <ArrowLeft size={16} aria-hidden="true" /> Back to website
           </Link>
           <p className="eyebrow">YOUR ACCOUNT</p>

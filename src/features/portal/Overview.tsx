@@ -8,13 +8,16 @@ import {
 import type { Dashboard } from "../../shared/api/client";
 import { apiBase } from "../../shared/api/client";
 import { dateLabel } from "../../shared/lib/dates";
+import { ordinal } from "../../shared/lib/monthly-schedule";
 import { TextLink } from "../../shared/ui/TextLink";
 import { PatientFormsPanel } from "../care-forms/patient/PatientForm";
 import { Panel } from "./components/Panel";
 import { VisitRow } from "./components/VisitRow";
-import { portalPath, roleNames } from "./navigation";
+import { usePortalPath, roleNames } from "./navigation";
+import { canAdmin } from "./permissions";
 
 export function Overview({ data }: { data: Dashboard }) {
+  const portalPath = usePortalPath();
   const role = data.account.role;
   const nextVisit =
     role === "ADMIN"
@@ -105,10 +108,10 @@ export function Overview({ data }: { data: Dashboard }) {
                 ? "Find eligible home visits and document your completed checkups."
                 : "Manage your routine checkups and see updates from the care team."}
         </p>
-        {data.preferredDate && (
+        {data.preferredDayOfMonth && (
           <span className="portal-preference">
-            <CalendarDays size={17} aria-hidden="true" /> Preferred date:{" "}
-            {dateLabel(data.preferredDate)}
+            <CalendarDays size={17} aria-hidden="true" /> Preferred visit day:{" "}
+            {ordinal(data.preferredDayOfMonth)} of every month
           </span>
         )}
       </section>
@@ -131,15 +134,27 @@ export function Overview({ data }: { data: Dashboard }) {
       )}
       {role === "PATIENT" && <PatientFormsPanel />}
       <div className="three-columns">
-        {metrics.map(({ label, value, path, icon: Icon }) => (
-          <article className="metric" key={label}>
-            <span className="icon-box">
-              <Icon size={22} aria-hidden="true" />
-            </span>
-            <strong>{value}</strong>
-            <TextLink to={portalPath(path)}>{label}</TextLink>
-          </article>
-        ))}
+        {metrics
+          .filter(
+            (metric) =>
+              role !== "ADMIN" ||
+              (metric.path === "enrolments" &&
+                canAdmin(data.account, "ENROLMENTS_MANAGE")) ||
+              (metric.path === "visits" &&
+                (canAdmin(data.account, "VISITS_MANAGE") ||
+                  canAdmin(data.account, "SUMMARIES_PUBLISH"))) ||
+              (metric.path === "extra-requests" &&
+                canAdmin(data.account, "EXTRA_VISITS_MANAGE")),
+          )
+          .map(({ label, value, path, icon: Icon }) => (
+            <article className="metric" key={label}>
+              <span className="icon-box">
+                <Icon size={22} aria-hidden="true" />
+              </span>
+              <strong>{value}</strong>
+              <TextLink to={portalPath(path)}>{label}</TextLink>
+            </article>
+          ))}
       </div>
       {role === "DOCTOR" && data.account.reviewStatus === "APPROVED" && (
         <Panel

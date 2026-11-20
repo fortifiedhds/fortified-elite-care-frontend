@@ -23,3 +23,5 @@ Use `Copy-Item .env.example .env` in PowerShell. Open `http://127.0.0.1:5173`.
 - `npm run generate:api` rebuilds the client schema from the sibling backend's `openapi.json`.
 
 See the [documentation index](docs/README.md) for structure, routes, API usage, styling and the local workflow.
+
+The administrator console opens at `/console-7c6e4b9f2a83`. Follow [authentication and administrators](docs/authentication-and-admin.md) for Google onboarding, mailbox verification, password settings and private documents. Initial administrator credentials, SMTP, Google OAuth and Cloudinary are configured in the sibling backend.

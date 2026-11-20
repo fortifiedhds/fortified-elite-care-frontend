@@ -17,6 +17,7 @@ import {
   patient,
   pending,
   reply,
+  signupChallenge,
   today,
   view,
 } from "../fixtures";
@@ -58,12 +59,10 @@ describe("app entry and public navigation", () => {
     reply("GET", { "/auth/me": ok(null) });
     view(<App />, "/missing");
     expect(
-      screen.getByRole("heading", { name: "Page unavailable" }),
+      screen.getByRole("heading", { name: /Let’s get you.*back to care/ }),
     ).toBeTruthy();
     expect(
-      screen
-        .getByRole("link", { name: "Go to Fortified Elite Care" })
-        .getAttribute("href"),
+      screen.getByRole("link", { name: "Back to home" }).getAttribute("href"),
     ).toBe("/");
   });
 
@@ -112,7 +111,9 @@ describe("app entry and public navigation", () => {
 describe("sign-in and enrolment", () => {
   it("submits credentials and passes the returned account to the app", async () => {
     const onAccount = vi.fn();
-    const post = reply("POST", { "/auth/login": ok(patient, 201) });
+    const post = reply("POST", {
+      "/auth/login": ok({ account: patient }, 201),
+    });
     view(<Login account={null} onAccount={onAccount} />);
     const user = userEvent.setup();
     await user.type(screen.getByLabelText("Email address"), patient.email);
@@ -165,6 +166,7 @@ describe("sign-in and enrolment", () => {
     const account = pending(patient);
     reply("GET", {
       "/auth/me": fail(401, "Sign in to continue."),
+      "/auth/challenge": ok(signupChallenge),
       "/dashboard": ok(dashboard(account)),
       "/forms/{kind}/definition": ok({
         version: "registration-v1",
@@ -177,7 +179,8 @@ describe("sign-in and enrolment", () => {
       }),
     });
     const post = reply("POST", {
-      "/auth/register/patient": ok(account, 201),
+      "/auth/register/patient": ok({ challenge: signupChallenge }, 201),
+      "/auth/verify": ok({ account }, 201),
     });
     view(<App />, "/register?role=patient");
     for (const [label, value] of [
@@ -185,7 +188,7 @@ describe("sign-in and enrolment", () => {
       ["Email address", patient.email],
       ["Password", "synthetic passphrase"],
       ["Area where you live", "Central"],
-      ["Preferred visit date", today],
+      ["Preferred monthly visit day", "15"],
       [/Sponsor name/, "Test sponsor"],
     ] as const)
       fireEvent.change(
@@ -207,7 +210,7 @@ describe("sign-in and enrolment", () => {
     fireEvent.click(screen.getByRole("button", { name: "Submit application" }));
     expect(post).toHaveBeenCalledWith("/auth/register/patient", {
       body: expect.objectContaining({
-        preferredDate: today,
+        preferredDayOfMonth: 15,
         sponsorName: "Test sponsor",
         healthAssessment: true,
         homeVisits: true,
@@ -217,6 +220,14 @@ describe("sign-in and enrolment", () => {
         emergencyContact: true,
       }),
     });
+    await screen.findByRole("heading", { name: "Check your email." });
+    expect(screen.getByLabelText("Current route").textContent).toBe(
+      "/verify-email",
+    );
+    fireEvent.change(await screen.findByLabelText("Verification code"), {
+      target: { value: "123456" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Verify code" }));
     await waitFor(() =>
       expect(screen.getByLabelText("Current route").textContent).toBe(
         "/portal/registration",
@@ -231,7 +242,7 @@ describe("sign-in and enrolment", () => {
     const onAccount = vi.fn(),
       user = userEvent.setup();
     const post = reply("POST", {
-      "/auth/register/doctor": ok(pending(doctor), 201),
+      "/auth/register/doctor": ok({ challenge: signupChallenge }, 201),
     });
     view(
       <Register account={null} onAccount={onAccount} />,
@@ -262,7 +273,12 @@ describe("sign-in and enrolment", () => {
         credentialId: "MDCN123",
       },
     });
-    expect(onAccount).toHaveBeenCalledWith(pending(doctor));
+    expect(onAccount).not.toHaveBeenCalled();
+    await waitFor(() =>
+      expect(screen.getByLabelText("Current route").textContent).toBe(
+        "/verify-email",
+      ),
+    );
   });
 });
 
@@ -275,10 +291,16 @@ describe("shared date and API formatting", () => {
     ).toThrow("Date required. Invalid area");
     expect(() =>
       readResponse({ response: new Response(null, { status: 500 }) }),
-    ).toThrow(/could not complete/);
-    expect(messageFor(new TypeError("Failed to fetch"))).toMatch(/unavailable/);
-    expect(messageFor(new Error("Test"))).toBe("Test");
-    expect(messageFor(null)).toBe("Something went wrong. Please try again.");
+    ).toThrow(/couldn’t complete/);
+    expect(messageFor(new TypeError("Failed to fetch"))).toMatch(
+      /connect right now/,
+    );
+    expect(messageFor(new Error("Test"))).toBe(
+      "We couldn’t complete your request. Please try again shortly.",
+    );
+    expect(messageFor(null)).toBe(
+      "We couldn’t complete your request. Please try again shortly.",
+    );
   });
 
   it("displays calendar dates without shifting the day", () => {

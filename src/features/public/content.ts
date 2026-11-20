@@ -24,7 +24,7 @@ export const steps = [
 export const questions = [
   [
     "Who is Fortified Elite Care for?",
-    "The programme is designed for adults aged 60 and over, including older adults with mobility challenges or who would benefit from routine monitoring.",
+    "Fortified Elite Care supports older adults, executives, corporate workers, people in high-stress jobs and any adult who wants ongoing routine health monitoring.",
   ],
   [
     "What happens during a home visit?",
@@ -52,7 +52,7 @@ export const publicInfo = {
   about: [
     "Our purpose",
     "Dignity and independence, at home.",
-    "We bring routine healthcare closer to older adults who face mobility or transport barriers, and help them stay connected to their primary healthcare providers.",
+    "We bring routine healthcare closer to older adults, busy executives, corporate workers and other adults, helping them stay connected to their primary healthcare providers.",
   ],
   "how-it-works": [
     "The care journey",
@@ -67,7 +67,7 @@ export const publicInfo = {
   "for-families": [
     "Patients and families",
     "A familiar place for better conversations.",
-    "Designed for people aged 60 and over who would benefit from planned home healthcare.",
+    "Designed for people who would benefit from planned home healthcare.",
   ],
   "for-doctors": [
     "For medical officers",
@@ -82,7 +82,7 @@ export const publicInfo = {
   contact: [
     "Contact",
     "How can we help?",
-    "Ask about enrolment, care packages or changes to your visit.",
+    "Ask about care and packages, share your feedback, or get in touch with the FEC team.",
   ],
   privacy: [
     "Privacy",
@@ -96,6 +96,4 @@ export const publicInfo = {
   ],
 } as const;
 
-export const publicPages = Object.keys(publicInfo) as Array<
-  keyof typeof publicInfo
->;
+export { publicPages } from "../../shared/lib/routes";

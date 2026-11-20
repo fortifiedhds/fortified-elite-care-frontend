@@ -2,7 +2,12 @@ import { ShieldCheck } from "lucide-react";
 import type { FormEvent } from "react";
 import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
-import { api, messageFor, readResponse } from "../../../shared/api/client";
+import {
+  api,
+  messageFor,
+  readResponse,
+  UserFacingError,
+} from "../../../shared/api/client";
 import { ErrorMessage } from "../../../shared/ui/Feedback";
 import { Loading } from "../components/FormFields";
 import { useLoad } from "../hooks/useFormResource";
@@ -79,7 +84,7 @@ function ConsentEditor({ initial }: { initial: ConsentView }) {
     setBusy(true);
     try {
       if (consentItems.some(([k]) => typeof choices[k] !== "boolean"))
-        throw new Error("Choose yes or no for each activity.");
+        throw new UserFacingError("Choose yes or no for each activity.");
       const updated = readResponse(
         await api.POST("/patients/care-permissions", {
           body: {

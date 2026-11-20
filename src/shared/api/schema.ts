@@ -68,6 +68,134 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/admin/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["adminLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["providers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/challenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["challenge"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["resend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/security": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["security"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["password"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/password/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["confirmPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/me": {
         parameters: {
             query?: never;
@@ -94,6 +222,86 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/google": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["start"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/google/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["callback"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/google/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["profile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/google/register/patient": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["googlePatient"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/google/register/doctor": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["googleDoctor"];
         delete?: never;
         options?: never;
         head?: never;
@@ -404,6 +612,134 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["adminList"];
+        put?: never;
+        post: operations["create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/accounts/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["permissions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/accounts/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["confirm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["fileList"];
+        put?: never;
+        post: operations["upload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/{id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["download"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/documents/{kind}/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -412,6 +748,8 @@ export interface components {
         Role: "PATIENT" | "DOCTOR" | "ADMIN";
         /** @enum {string} */
         ReviewStatus: "PENDING" | "APPROVED";
+        /** @enum {string} */
+        AdminPermission: "ENROLMENTS_MANAGE" | "VISITS_MANAGE" | "SUMMARIES_PUBLISH" | "EXTRA_VISITS_MANAGE" | "ADMINS_MANAGE";
         AccountView: {
             /** Format: uuid */
             id: string;
@@ -420,6 +758,7 @@ export interface components {
             role: components["schemas"]["Role"];
             reviewStatus: components["schemas"]["ReviewStatus"];
             clinicalReviewer: boolean;
+            adminPermissions: components["schemas"]["AdminPermission"][];
         };
         /** @enum {string} */
         VisitStatus: "AVAILABLE" | "ASSIGNED" | "COMPLETED";
@@ -473,8 +812,7 @@ export interface components {
             enrolments: components["schemas"]["AccountReview"][];
             support: components["schemas"]["SupportView"][];
             notifications: components["schemas"]["NotificationView"][];
-            /** Format: date */
-            preferredDate?: string;
+            preferredDayOfMonth?: number;
         };
         PatientInput: {
             /** Format: email */
@@ -483,8 +821,11 @@ export interface components {
             name: string;
             /** @example Ibadan North */
             area: string;
-            /** Format: date */
-            preferredDate: string;
+            /**
+             * @description Preferred recurring day of each month. Shorter months use their last day. Appointments are confirmed separately.
+             * @example 15
+             */
+            preferredDayOfMonth: number;
             sponsorName?: string;
             healthAssessment: boolean;
             homeVisits: boolean;
@@ -492,6 +833,21 @@ export interface components {
             education: boolean;
             referrals: boolean;
             emergencyContact: boolean;
+        };
+        /** @enum {string} */
+        ChallengePurpose: "SIGNUP" | "VERIFY_EMAIL" | "GOOGLE_LINK" | "GOOGLE_EMAIL" | "PASSWORD_CHANGE" | "ADMIN_CHANGE" | "ADMIN_LOGIN";
+        ChallengeView: {
+            email: string;
+            purpose: components["schemas"]["ChallengePurpose"];
+            /** Format: date-time */
+            expiresAt: string;
+            /** Format: date-time */
+            resendAt: string;
+        };
+        AuthResult: {
+            account?: components["schemas"]["AccountView"];
+            challenge?: components["schemas"]["ChallengeView"];
+            onboarding?: boolean;
         };
         DoctorInput: {
             /** Format: email */
@@ -508,12 +864,54 @@ export interface components {
             email: string;
             password: string;
         };
-        DateInput: {
+        ProvidersView: {
+            google: boolean;
+            email: boolean;
+            uploads: boolean;
+        };
+        CodeInput: {
+            code: string;
+        };
+        SecurityView: {
+            hasPassword: boolean;
+            googleLinked: boolean;
+            emailVerified: boolean;
+        };
+        PasswordInput: {
+            newPassword: string;
+            currentPassword?: string;
+        };
+        GoogleProfileView: {
+            name: string;
+            email: string;
+        };
+        GooglePatientInput: {
+            name: string;
+            /** @example Ibadan North */
+            area: string;
             /**
-             * Format: date
-             * @example 2027-01-10
+             * @description Preferred recurring day of each month. Shorter months use their last day. Appointments are confirmed separately.
+             * @example 15
              */
-            date: string;
+            preferredDayOfMonth: number;
+            sponsorName?: string;
+            healthAssessment: boolean;
+            homeVisits: boolean;
+            sampleCollection: boolean;
+            education: boolean;
+            referrals: boolean;
+            emergencyContact: boolean;
+        };
+        GoogleDoctorInput: {
+            name: string;
+            /** @example Ibadan North */
+            area: string;
+            /** @description Professional registration or licence number */
+            credentialId: string;
+        };
+        RoutineVisitInput: {
+            /** @example 2027-01 */
+            month: string;
         };
         AssignInput: {
             /** Format: uuid */
@@ -525,6 +923,10 @@ export interface components {
             };
             observations: string;
             summary: string;
+        };
+        MonthlyPreferenceInput: {
+            /** @example 15 */
+            dayOfMonth: number;
         };
         SupportInput: {
             reason: string;
@@ -645,6 +1047,85 @@ export interface components {
             correction: string;
             reason: string;
         };
+        AdminView: {
+            id: string;
+            name: string;
+            email: string;
+            adminPermissions: components["schemas"]["AdminPermission"][];
+        };
+        AdminCreateInput: {
+            /** Format: email */
+            email: string;
+            password: string;
+            name: string;
+            permissions: components["schemas"]["AdminPermission"][];
+        };
+        AdminAccessInput: {
+            /** Format: uuid */
+            id: string;
+            permissions: components["schemas"]["AdminPermission"][];
+        };
+        FileView: {
+            id: string;
+            name: string;
+            bytes: number;
+            format: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        AdminDocumentView: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "REGISTRATION" | "CARE_PERMISSIONS" | "CONSULTATION";
+            title: string;
+            personName: string;
+            /** @enum {string} */
+            personRole: "PATIENT" | "DOCTOR";
+            /** Format: uuid */
+            patientId: string;
+            /** Format: date-time */
+            recordedAt: string;
+            version: string;
+            status: string;
+        };
+        AdminDocumentDetail: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "REGISTRATION" | "CARE_PERMISSIONS" | "CONSULTATION";
+            title: string;
+            personName: string;
+            /** @enum {string} */
+            personRole: "PATIENT" | "DOCTOR";
+            /** Format: uuid */
+            patientId: string;
+            /** Format: date-time */
+            recordedAt: string;
+            version: string;
+            status: string;
+            consent?: components["schemas"]["ConsentView"];
+            summary?: string;
+            patientName?: string;
+            visitDate?: string;
+        };
+        ContactInput: {
+            name: string;
+            email: string;
+            organisation?: string;
+            phone?: string;
+            /** @enum {string} */
+            topic: "CARE_ENQUIRY" | "FEEDBACK" | "CAREERS" | "GENERAL";
+            message: string;
+            /** @enum {boolean} */
+            privacyAccepted: true;
+            /** @description Leave empty. */
+            website?: string;
+        };
+        ContactResult: {
+            /** @enum {boolean} */
+            sent: true;
+        };
     };
     responses: never;
     parameters: never;
@@ -691,7 +1172,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AccountView"];
+                    "application/json": components["schemas"]["AuthResult"];
                 };
             };
         };
@@ -714,7 +1195,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AccountView"];
+                    "application/json": components["schemas"]["AuthResult"];
                 };
             };
         };
@@ -737,7 +1218,175 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AccountView"];
+                    "application/json": components["schemas"]["AuthResult"];
+                };
+            };
+        };
+    };
+    adminLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResult"];
+                };
+            };
+        };
+    };
+    providers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProvidersView"];
+                };
+            };
+        };
+    };
+    challenge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChallengeView"];
+                };
+            };
+        };
+    };
+    resend: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChallengeView"];
+                };
+            };
+        };
+    };
+    verify: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CodeInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResult"];
+                };
+            };
+        };
+    };
+    security: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SecurityView"];
+                };
+            };
+        };
+    };
+    password: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChallengeView"];
+                };
+            };
+        };
+    };
+    confirmPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CodeInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": boolean;
                 };
             };
         };
@@ -780,6 +1429,108 @@ export interface operations {
             };
         };
     };
+    start: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    callback: {
+        parameters: {
+            query: {
+                code: string;
+                state: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    profile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoogleProfileView"];
+                };
+            };
+        };
+    };
+    googlePatient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GooglePatientInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResult"];
+                };
+            };
+        };
+    };
+    googleDoctor: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleDoctorInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResult"];
+                };
+            };
+        };
+    };
     request: {
         parameters: {
             query?: never;
@@ -789,7 +1540,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DateInput"];
+                "application/json": components["schemas"]["RoutineVisitInput"];
             };
         };
         responses: {
@@ -969,7 +1720,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DateInput"];
+                "application/json": components["schemas"]["MonthlyPreferenceInput"];
             };
         };
         responses: {
@@ -1316,6 +2067,222 @@ export interface operations {
                     "application/json": {
                         ready: boolean;
                     };
+                };
+            };
+        };
+    };
+    adminList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminView"][];
+                };
+            };
+        };
+    };
+    create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminCreateInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChallengeView"];
+                };
+            };
+        };
+    };
+    permissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminAccessInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChallengeView"];
+                };
+            };
+        };
+    };
+    confirm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CodeInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": boolean;
+                };
+            };
+        };
+    };
+    fileList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileView"][];
+                };
+            };
+        };
+    };
+    upload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileView"];
+                };
+            };
+        };
+    };
+    download: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminDocumentView"][];
+                };
+            };
+        };
+    };
+    detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                kind: "CARE_PERMISSIONS" | "CONSULTATION";
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminDocumentDetail"];
+                };
+            };
+        };
+    };
+    send: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactInput"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactResult"];
                 };
             };
         };

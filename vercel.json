@@ -1,3 +1,28 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/:page(about|how-it-works|services|for-families|for-doctors|faq|contact|privacy|terms|login|register|account-help|verify-email)",
+      "destination": "/index.html"
+    },
+    { "source": "/google/onboarding", "destination": "/index.html" },
+    { "source": "/portal", "destination": "/index.html" },
+    {
+      "source": "/portal/:section(checkups|appointments|history|summaries|registration|baseline|consent|agreement|payments|available|assigned|notifications|documents|settings)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/portal/:section(appointments|assigned)/:id",
+      "destination": "/index.html"
+    },
+    { "source": "/portal/assigned/:id/baseline", "destination": "/index.html" },
+    { "source": "/console-7c6e4b9f2a83", "destination": "/index.html" },
+    {
+      "source": "/console-7c6e4b9f2a83/:section(verify-email|enrolments|visits|extra-requests|administrators|notifications|documents|settings)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/console-7c6e4b9f2a83/enrolments/:id/review",
+      "destination": "/index.html"
+    }
+  ]
 }

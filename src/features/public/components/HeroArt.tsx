@@ -105,7 +105,7 @@ function JourneyArt() {
           src="/hero/how-it-works-1400.jpg"
           srcSet="/hero/how-it-works-900.jpg 900w, /hero/how-it-works-1400.jpg 1400w"
           sizes="(max-width: 800px) 92vw, 560px"
-          alt="A carer talks an older man through his medication at the kitchen table"
+          alt="A woman and an older adult review medication together at home"
           width={1400}
           height={933}
           fetchPriority="high"

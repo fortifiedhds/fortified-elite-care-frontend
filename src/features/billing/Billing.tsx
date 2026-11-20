@@ -10,13 +10,13 @@ const intervals = [
   "Annually",
 ] as const;
 
-export function Billing({ admin = false }: { admin?: boolean }) {
+export function Billing() {
   const [selected, setSelected] =
     useState<(typeof intervals)[number]>("Monthly");
   return (
     <div className="stack">
       <section className="panel">
-        <h2>{admin ? "Package billing" : "Compare care packages"}</h2>
+        <h2>Compare care packages</h2>
         <p>
           Request a quote for your preferred package and billing frequency.
           Online checkout is not available.

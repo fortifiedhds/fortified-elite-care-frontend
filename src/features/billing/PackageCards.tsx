@@ -51,7 +51,7 @@ export function PackageCards() {
             ))}
           </ul>
           <a
-            className={"button " + (i === 2 ? "peach" : "outline")}
+            className={"button " + (i === 2 ? "accent" : "outline")}
             href={
               "mailto:" +
               careEmail +

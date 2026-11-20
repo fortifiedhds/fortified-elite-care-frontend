@@ -8,12 +8,13 @@ import {
   UserRound,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { careEmail, carePhone } from "../../shared/lib/contact";
+import { siteHref } from "../../shared/lib/sites";
 import { PackageCards } from "../billing/PackageCards";
 import { FAQList, JoinBand, Start, Steps } from "./components/PublicContent";
 import { HeroArt, hasHeroArt } from "./components/HeroArt";
 import { Footer, PublicHeader } from "./components/PublicLayout";
 import { publicInfo } from "./content";
+import { ContactSection } from "./components/ContactSection";
 
 export function PublicPage({
   page,
@@ -43,6 +44,11 @@ export function PublicPage({
               {page === "for-doctors" && (
                 <Start role="doctor" label="Apply as a doctor" />
               )}
+              {page === "contact" && (
+                <a href="#contact-form" className="button primary">
+                  Send us a message
+                </a>
+              )}
               {(page === "how-it-works" || page === "for-families") && (
                 <Start />
               )}
@@ -55,8 +61,8 @@ export function PublicPage({
             <>
               <Steps />
               <p className="feedback">
-                A preferred date is a request. Your visit is confirmed
-                separately when a doctor is assigned.
+                Choose a preferred day each month. In shorter months, we use the
+                last day. Your appointment is confirmed separately.
               </p>
             </>
           )}
@@ -80,7 +86,7 @@ export function PublicPage({
                   icon: Heart,
                   title: "Care with time to listen",
                   detail:
-                    "The programme supports preventive care and healthy ageing in familiar surroundings.",
+                    "The programme supports preventive care, routine monitoring and wellbeing in familiar surroundings.",
                 },
                 {
                   icon: House,
@@ -105,7 +111,7 @@ export function PublicPage({
                     icon: UserRound,
                     title: "Who can enrol",
                     detail:
-                      "Older adults living alone, with mobility challenges, or looking for ongoing routine monitoring.",
+                      "Older adults, executives, people in high-stress jobs and any adult who wants ongoing routine monitoring.",
                   },
                   {
                     icon: ShieldCheck,
@@ -170,22 +176,7 @@ export function PublicPage({
               <FAQList />
             </div>
           )}
-          {page === "contact" && (
-            <div className="portal-grid">
-              <section className="panel">
-                <h2>Contact the care team</h2>
-                <a href={"mailto:" + careEmail}>{careEmail}</a>
-                <a href={"tel:" + carePhone.replaceAll(" ", "")}>{carePhone}</a>
-              </section>
-              <section className="panel">
-                <h2>For routine enquiries</h2>
-                <p>
-                  For emergencies, seek immediate medical care. Please don’t
-                  send clinical details by email.
-                </p>
-              </section>
-            </div>
-          )}
+          {page === "contact" && <ContactSection />}
           {page === "privacy" && (
             <section className="panel">
               <h2>Your sharing choices</h2>
@@ -195,7 +186,7 @@ export function PublicPage({
                 updates in your portal.
               </p>
               <Link
-                to={signedIn ? "/portal" : "/login"}
+                to={siteHref("dashboard", signedIn ? "/portal" : "/login")}
                 className="button outline"
               >
                 {signedIn ? "Go to your portal" : "Sign in"}

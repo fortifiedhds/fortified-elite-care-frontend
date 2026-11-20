@@ -14,14 +14,16 @@ Use `Copy-Item .env.example .env` in PowerShell. Open `http://127.0.0.1:5173`. T
 
 ## Full workflow smoke check
 
-1. Create a patient and a doctor using the same service area. As the patient, save and resume a registration draft, then submit.
-2. Provision a clinical reviewer using the backend runbook. In **Enrolments**, review the patient registration, assign a client number, then approve the patient and doctor.
+1. Configure SMTP and provider credentials using the [authentication setup](../../fortified-elite-care-backend/docs/authentication.md). Create a patient and a doctor using the same service area, completing each email verification. As the patient, save and resume a registration draft, then submit.
+2. Bootstrap the first administrator from the backend environment and sign in at `/console-7c6e4b9f2a83` using password and email OTP. In **Enrolments**, review the patient registration, assign a client number, then approve the patient and doctor.
 3. As the patient, confirm that home visits are allowed in **Care permissions**. Submit a baseline self-report and request a checkup for today in the service timezone.
 4. As the doctor, claim the visit, open the clinical baseline and verify the submitted self-report is visible there. Save a consultation draft, then sign it. Add a signed correction if exercising the addendum flow.
 5. As the clinical reviewer, release the signed summary under **Visit management**. As the patient, open **Visit summaries** and verify it displays the released summary.
 6. Try the quote enquiry on **Payments** and review the service agreement page. See [FEC's outstanding decisions](../../fortified-elite-care-backend/docs/checkout-and-agreement.md) for the activation dependencies.
 
 Use synthetic accounts and separate browser sessions for the three roles.
+
+Verify first-time Google onboarding and a subsequent direct sign-in. Create a password in Settings for a Google-only account, then verify password sign-in. In Administrators, create a separate restricted administrator and confirm that its queues match its grants. Upload and download a synthetic document. Provider-backed checks require configured accounts, while automated suites use provider fakes.
 
 ## Builds and preview
 

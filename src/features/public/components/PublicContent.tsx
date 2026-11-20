@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { questions, steps } from "../content";
+import { siteHref } from "../../../shared/lib/sites";
 
 export function Start({
   role = "patient",
@@ -13,8 +14,8 @@ export function Start({
 }) {
   return (
     <Link
-      className={"button " + (light ? "peach" : "primary")}
-      to={"/register?role=" + role}
+      className={"button " + (light ? "accent" : "primary")}
+      to={siteHref("dashboard", "/register?role=" + role)}
     >
       {label}
       <ArrowRight size={18} aria-hidden="true" />

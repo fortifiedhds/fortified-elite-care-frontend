@@ -16,6 +16,19 @@ export type Visit = components["schemas"]["VisitView"];
 export type PatientInput = components["schemas"]["PatientInput"];
 export type NoteInput = components["schemas"]["NoteInput"];
 
+const requestFailed =
+  "We couldn’t complete your request. Please try again shortly.";
+export class UserFacingError extends Error {}
+
+function safeMessage(message: string) {
+  return (
+    message.length < 500 &&
+    !/prisma|postgres|sqlstate|stack trace|node_modules|ECONN|ENOTFOUND|\bAPI\b|\bSMTP\b|database|internal server|unexpected token|failed to fetch|validation failed \(uuid/i.test(
+      message,
+    )
+  );
+}
+
 export function readResponse<T>(result: {
   data?: T;
   error?: unknown;
@@ -28,24 +41,29 @@ export function readResponse<T>(result: {
     "message" in result.error
       ? result.error.message
       : null;
-  if (typeof message === "string") throw new Error(message);
+  if (result.response.status >= 500) throw new UserFacingError(requestFailed);
+  if (result.response.status === 429)
+    throw new UserFacingError(
+      "You’ve made several requests in a short time. Please wait a moment and try again.",
+    );
+  if (typeof message === "string" && safeMessage(message))
+    throw new UserFacingError(message);
   if (
     Array.isArray(message) &&
-    message.every((item) => typeof item === "string")
+    message.length > 0 &&
+    message.every((item) => typeof item === "string" && safeMessage(item))
   ) {
-    throw new Error(message.join(". "));
+    throw new UserFacingError(message.join(". "));
   }
-  throw new Error(
-    "The service could not complete this request. Please try again.",
-  );
+  throw new UserFacingError(requestFailed);
 }
 
 export function messageFor(error: unknown) {
   return error instanceof TypeError
-    ? "The care service is unavailable. Check that the API is running and try again."
-    : error instanceof Error
+    ? "We couldn’t connect right now. Check your internet connection and try again."
+    : error instanceof UserFacingError
       ? error.message
-      : "Something went wrong. Please try again.";
+      : requestFailed;
 }
 
 export const pathParams = (id: string) => ({ params: { path: { id } } });

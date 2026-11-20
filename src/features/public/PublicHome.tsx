@@ -19,16 +19,13 @@ export function PublicHome({ signedIn }: { signedIn: boolean }) {
         <div className="hero-band">
           <section className="wrap hero">
             <div className="hero-copy">
-              {/* <p className="eyebrow">
-                <span /> DOCTOR-LED HOME HEALTHCARE · AGES 60+
-              </p> */}
               <h1>
                 Good care <em>feels closer.</em>
               </h1>
               <p className="lede">
-                Monthly home visits from a qualified doctor, with time to
-                listen, check how you’re doing and help you plan what comes
-                next.
+                Monthly home visits from a qualified doctor for older adults,
+                busy professionals and anyone seeking routine monitoring. Time
+                to listen, check how you’re doing and plan what comes next.
               </p>
               <div className="actions">
                 <Start />
@@ -38,18 +35,18 @@ export function PublicHome({ signedIn }: { signedIn: boolean }) {
               </div>
               <p className="hero-note">
                 {/* <ShieldCheck size={17} aria-hidden="true" /> */}
-                Routine care for older adults. For emergencies, seek immediate
-                medical care.
+                Routine care for adults. For emergencies, seek immediate medical
+                care.
               </p>
             </div>
             <figure className="hero-image">
               <img
-                src="/home-visit-1400.jpg"
-                srcSet="/home-visit-900.jpg 900w, /home-visit-1400.jpg 1400w, /home-visit-1800.jpg 1800w"
+                src="/hero/how-it-works-1400.jpg"
+                srcSet="/hero/how-it-works-900.jpg 900w, /hero/how-it-works-1400.jpg 1400w"
                 sizes="(max-width: 900px) 100vw, 900px"
-                alt="A healthcare professional checks an older adult’s blood pressure during a home visit"
-                width={1800}
-                height={1200}
+                alt="A woman and an older adult review medication together at home"
+                width={1400}
+                height={933}
                 fetchPriority="high"
               />
               <span className="hero-stamp" aria-hidden="true">

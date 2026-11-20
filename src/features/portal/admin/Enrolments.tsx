@@ -5,7 +5,7 @@ import type { Dashboard } from "../../../shared/api/client";
 import { api, pathParams, readResponse } from "../../../shared/api/client";
 import { Empty } from "../../../shared/ui/Feedback";
 import { Panel } from "../components/Panel";
-import { portalPath } from "../navigation";
+import { usePortalPath } from "../navigation";
 import type { Action } from "../types";
 
 export function Enrolments({
@@ -17,6 +17,7 @@ export function Enrolments({
   act: Action;
   busy: boolean;
 }) {
+  const portalPath = usePortalPath();
   const [filter, setFilter] = useState<"PENDING" | "ALL">("PENDING");
   const entries = data.enrolments.filter(
     (account) => filter === "ALL" || account.reviewStatus === filter,

@@ -15,6 +15,8 @@ const visit = readResponse(response);
 
 ## Sessions and permissions
 
+Authentication writes return AuthResult with either account, challenge or onboarding. A challenge opens the browser-bound email verification route. The shared VerificationForm also handles password and administrator confirmations. Google onboarding reads its verified identity from the API before collecting the role profile. See [authentication and administrators](authentication-and-admin.md) for request details and route behavior.
+
 The browser keeps the HTTP-only session cookie. The frontend stores the public account view in React state. A failed session check redirects private routes to login. Portal navigation and screens use the account's role and review state. The API enforces access independently on each read and write. Keep local development on `127.0.0.1` for both sites and set `WEB_ORIGIN` on the backend to the exact frontend origin.
 
 ## Form protocol

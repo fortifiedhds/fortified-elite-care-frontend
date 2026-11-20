@@ -62,7 +62,11 @@ const notice = {
   availableAt: "2026-11-10T10:00:00Z",
   read: false,
 };
-const clinician = { ...admin, clinicalReviewer: true };
+const clinician = {
+  ...admin,
+  clinicalReviewer: true,
+  adminPermissions: [...admin.adminPermissions, "SUMMARIES_PUBLISH" as const],
+};
 
 describe("portal deep links", () => {
   const record = { version: "test-form-v1", revision: 0, answers: {} };
@@ -93,7 +97,6 @@ describe("portal deep links", () => {
         [admin, "/enrolments/patient/review", "Official use"],
         [admin, "/visits", "Visit management"],
         [admin, "/extra-requests", "Additional checkup requests"],
-        [admin, "/billing", "Package billing"],
       ] as const
     ).map(([account, path, heading]) => ({ account, path, heading })),
   )("$account.role can open $path", async ({ account, path, heading }) => {
@@ -182,7 +185,7 @@ describe("portal shell and overview", () => {
     });
     view(<Portal account={admin} onSignOut={vi.fn()} />, "/portal");
     expect((await screen.findByRole("alert")).textContent).toBe(
-      "Care service unavailable",
+      "We couldn’t complete your request. Please try again shortly.",
     );
     await userEvent
       .setup()
@@ -216,25 +219,28 @@ describe("patient checkups, appointments and summaries", () => {
     const patch = reply("PATCH", { "/patients/preference": ok(true) });
     view(
       <PatientCheckups
-        data={dashboard(patient, { preferredDate: "2099-06-19" })}
+        data={dashboard(patient, { preferredDayOfMonth: 19 })}
         act={runAction}
         busy={false}
       />,
     );
     const user = userEvent.setup();
     expect(
-      (screen.getByLabelText("Visit date") as HTMLInputElement).value,
-    ).toBe("2099-06-19");
-    fireEvent.change(screen.getByLabelText("Visit date"), {
-      target: { value: "2099-06-20" },
+      (screen.getByLabelText("Visit month") as HTMLInputElement).value,
+    ).toBe("2099-06");
+    fireEvent.change(screen.getByLabelText("Visit month"), {
+      target: { value: "2099-07" },
     });
     await user.click(screen.getByRole("button", { name: "Request checkup" }));
     expect(post).toHaveBeenCalledWith("/visits", {
-      body: { date: "2099-06-20" },
+      body: { month: "2099-07" },
     });
-    await user.click(screen.getByRole("button", { name: "Save as preferred" }));
+    fireEvent.change(screen.getByLabelText("Preferred monthly visit day"), {
+      target: { value: "20" },
+    });
+    await user.click(screen.getByRole("button", { name: "Save monthly day" }));
     expect(patch).toHaveBeenCalledWith("/patients/preference", {
-      body: { date: "2099-06-20" },
+      body: { dayOfMonth: 20 },
     });
     await user.type(screen.getByLabelText("Reason"), extra.reason);
     await user.click(screen.getByRole("button", { name: "Send request" }));
@@ -250,7 +256,7 @@ describe("patient checkups, appointments and summaries", () => {
     view(
       <PatientCheckups
         data={dashboard(pending(patient), {
-          preferredDate: "2000-01-01",
+          preferredDayOfMonth: undefined,
           support: [extra],
         })}
         act={runAction}
@@ -272,8 +278,8 @@ describe("patient checkups, appointments and summaries", () => {
       ).disabled,
     ).toBe(true);
     expect(
-      (screen.getByLabelText("Visit date") as HTMLInputElement).value,
-    ).toBe(today);
+      (screen.getByLabelText("Visit month") as HTMLInputElement).value,
+    ).toBe("2099-07");
     expect(screen.getByText("In review")).toBeTruthy();
   });
 

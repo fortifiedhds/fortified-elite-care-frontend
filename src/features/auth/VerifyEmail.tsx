@@ -1,0 +1,76 @@
+import { useEffect, useState } from "react";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import { api, messageFor, readResponse } from "../../shared/api/client";
+import { ErrorMessage } from "../../shared/ui/Feedback";
+import { adminConsolePath } from "../../shared/lib/admin";
+import { siteHref } from "../../shared/lib/sites";
+import { AuthLayout } from "./components/AuthLayout";
+import type { Props } from "./types";
+import { VerificationForm } from "./VerificationForm";
+import type { Challenge } from "./VerificationForm";
+
+export function VerifyEmail({ onAccount }: Pick<Props, "onAccount">) {
+  const [challenge, setChallenge] = useState<Challenge>();
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const location = useLocation();
+  const admin =
+    challenge?.purpose === "ADMIN_LOGIN" ||
+    params.get("admin") === "1" ||
+    location.pathname.startsWith(adminConsolePath + "/");
+  useEffect(() => {
+    const controller = new AbortController();
+    void api
+      .GET("/auth/challenge", { signal: controller.signal })
+      .then((result) => {
+        if (!controller.signal.aborted) setChallenge(readResponse(result));
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted) setError(messageFor(error));
+      });
+    return () => controller.abort();
+  }, []);
+  return (
+    <AuthLayout
+      title="Check your email."
+      subtitle="Use your verification code to continue securely."
+    >
+      <ErrorMessage>{error}</ErrorMessage>
+      {challenge ? (
+        <VerificationForm
+          initial={challenge}
+          verify={async (code) => {
+            const result = readResponse(
+              await api.POST("/auth/verify", { body: { code } }),
+            );
+            if (result.onboarding)
+              navigate("/google/onboarding", { replace: true });
+            else if (result.account) {
+              onAccount(result.account);
+              navigate(
+                result.account.role === "ADMIN"
+                  ? adminConsolePath
+                  : challenge.purpose === "SIGNUP" &&
+                      result.account.role === "PATIENT"
+                    ? "/portal/registration"
+                    : "/portal",
+                { replace: true },
+              );
+            }
+          }}
+        />
+      ) : (
+        !error && <p role="status">Loading verification…</p>
+      )}
+      <Link to={admin ? siteHref("admin", adminConsolePath) : "/login"}>
+        Back to sign in
+      </Link>
+    </AuthLayout>
+  );
+}

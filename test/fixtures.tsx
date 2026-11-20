@@ -12,6 +12,7 @@ export const patient: Account = {
   role: "PATIENT",
   reviewStatus: "APPROVED",
   clinicalReviewer: false,
+  adminPermissions: [],
 };
 export const doctor: Account = {
   ...patient,
@@ -24,12 +25,24 @@ export const admin: Account = {
   id: "admin",
   name: "Test Admin",
   role: "ADMIN",
+  adminPermissions: [
+    "ENROLMENTS_MANAGE",
+    "VISITS_MANAGE",
+    "EXTRA_VISITS_MANAGE",
+    "ADMINS_MANAGE",
+  ],
 };
 export const pending = (account: Account): Account => ({
   ...account,
   reviewStatus: "PENDING",
 });
 export const today = "2099-06-15";
+export const signupChallenge = {
+  email: patient.email,
+  purpose: "SIGNUP" as const,
+  expiresAt: "2099-06-15T12:00:00Z",
+  resendAt: "2000-01-01T00:00:00Z",
+};
 export const visit: Visit = {
   id: "visit-1",
   area: "Central",
@@ -45,6 +58,7 @@ export const dashboard = (
 ): Dashboard => ({
   account,
   serviceToday: today,
+  preferredDayOfMonth: account.role === "PATIENT" ? 15 : undefined,
   visits: [],
   available: [],
   support: [],

@@ -1,4 +1,4 @@
-import { LogOut, Menu } from "lucide-react";
+import { LogOut, Menu, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { matchPath, Navigate, NavLink, useLocation } from "react-router-dom";
 import type { Account, Dashboard } from "../../shared/api/client";
@@ -15,7 +15,12 @@ import { Enrolments } from "./admin/Enrolments";
 import { AdminVisits, ExtraRequests } from "./admin/VisitManagement";
 import { AssignedVisitDetail, AssignedVisits } from "./doctor/AssignedVisits";
 import { AvailableVisits } from "./doctor/AvailableVisits";
-import { navigation, portalPath, roleNames } from "./navigation";
+import { navigation, roleNames } from "./navigation";
+import { canAdmin } from "./permissions";
+import { Settings } from "../settings/Settings";
+import { CareDocuments } from "../files/CareDocuments";
+import { AdminDocuments } from "../files/AdminDocuments";
+import { Administrators } from "./admin/Administrators";
 import { Inbox } from "./notifications/Inbox";
 import { Overview } from "./Overview";
 import {
@@ -24,20 +29,30 @@ import {
   PatientVisitList,
 } from "./patient/Appointments";
 import { PatientCheckups } from "./patient/PatientCheckups";
+import { useMobileMenu } from "../../shared/hooks/useMobileMenu";
 
 export function Portal({
   account,
   onSignOut,
+  basePath = "/portal",
 }: {
   account: Account;
   onSignOut: () => void;
+  basePath?: string;
 }) {
   const location = useLocation();
   const [data, setData] = useState<Dashboard | null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const {
+    open: menuOpen,
+    toggle: toggleMenu,
+    close: closeMenu,
+    shellRef,
+    panelRef,
+    toggleRef,
+  } = useMobileMenu<HTMLDivElement>(800);
   const refresh = useCallback(
     async (signal?: AbortSignal) => {
       const response = await api.GET("/dashboard", { signal });
@@ -104,14 +119,22 @@ export function Portal({
     }
   }
 
-  const tabs = navigation[account.role];
+  const currentAccount = data?.account ?? account;
+  const tabs = navigation[account.role].filter(
+    (tab) =>
+      !tab.permission ||
+      canAdmin(currentAccount, tab.permission) ||
+      (tab.path === "visits" && canAdmin(currentAccount, "SUMMARIES_PUBLISH")),
+  );
+  const portalPath = (path: string) =>
+    path ? basePath + "/" + path : basePath;
   const baselineMatch =
     account.role === "DOCTOR"
       ? matchPath("/portal/assigned/:id/baseline", location.pathname)
       : null;
   const reviewMatch =
     account.role === "ADMIN"
-      ? matchPath("/portal/enrolments/:id/review", location.pathname)
+      ? matchPath(basePath + "/enrolments/:id/review", location.pathname)
       : null;
   const patientVisit =
     account.role === "PATIENT"
@@ -134,7 +157,7 @@ export function Portal({
     : tabs.find(
         ({ path }) => portalPath(path) === location.pathname.replace(/\/$/, ""),
       );
-  if (!current) return <Navigate to="/portal" replace />;
+  if (!current) return <Navigate to={basePath} replace />;
 
   function renderContent() {
     if (!data)
@@ -201,8 +224,6 @@ export function Portal({
         return <ServiceAgreement />;
       case "payments":
         return <Billing />;
-      case "billing":
-        return <Billing admin />;
       case "available":
         return <AvailableVisits {...props} />;
       case "assigned":
@@ -215,28 +236,43 @@ export function Portal({
         return <ExtraRequests {...props} />;
       case "notifications":
         return <Inbox {...props} />;
+      case "settings":
+        return <Settings />;
+      case "documents":
+        return account.role === "ADMIN" ? (
+          <AdminDocuments account={currentAccount} />
+        ) : (
+          <CareDocuments account={currentAccount} />
+        );
+      case "administrators":
+        return <Administrators refresh={refresh} />;
       default:
         return <Overview data={data} />;
     }
   }
 
   return (
-    <div className="portal">
+    <div className="portal" ref={shellRef}>
       <header className="public-header">
         <div className="wrap header-inner">
           <div className="actions">
             <Brand />
             <button
-              className="button outline icon portal-mobile-menu"
+              className="menu-toggle portal-mobile-menu"
+              ref={toggleRef}
               aria-label={
                 menuOpen ? "Close portal navigation" : "Open portal navigation"
               }
               aria-controls="portal-navigation"
               aria-expanded={menuOpen}
               type="button"
-              onClick={() => setMenuOpen(!menuOpen)}
+              onClick={toggleMenu}
             >
-              <Menu size={18} aria-hidden="true" />
+              {menuOpen ? (
+                <X aria-hidden="true" />
+              ) : (
+                <Menu aria-hidden="true" />
+              )}
             </button>
           </div>
           <button
@@ -249,7 +285,12 @@ export function Portal({
         </div>
       </header>
       <div className="wrap portal-layout">
-        <aside className="sidebar" id="portal-navigation" hidden={!menuOpen}>
+        <aside
+          className="sidebar"
+          id="portal-navigation"
+          hidden={!menuOpen}
+          ref={panelRef}
+        >
           <p className="eyebrow">{roleNames[account.role].toUpperCase()}</p>
           <nav aria-label="Portal navigation">
             {tabs.map(({ path, label, icon: Icon }) => (
@@ -260,7 +301,7 @@ export function Portal({
                 onClick={() => {
                   setError("");
                   setNotice("");
-                  setMenuOpen(false);
+                  closeMenu();
                 }}
               >
                 <Icon size={18} aria-hidden="true" />
@@ -271,6 +312,7 @@ export function Portal({
         </aside>
         <main
           className="portal-main page-enter"
+          inert={menuOpen ? true : undefined}
           id="main-content"
           key={location.pathname}
         >

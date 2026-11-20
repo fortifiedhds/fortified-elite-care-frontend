@@ -17,7 +17,7 @@ import {
   PatientFormsPanel,
 } from "../../src/features/care-forms/patient/PatientForm";
 import type { Answers, Definition } from "../../src/features/care-forms/types";
-import { api } from "../../src/shared/api/client";
+import { api, UserFacingError } from "../../src/shared/api/client";
 import { fail, ok, patient, pending, reply, view } from "../fixtures";
 
 const version = "fec-forms-v1";
@@ -156,7 +156,7 @@ describe("registration and assessment wizard", () => {
 
   it("preserves answers while moving between steps and surfaces a stale draft error", async () => {
     const onSave = vi.fn(async () => {
-      throw new Error("Reload before editing.");
+      throw new UserFacingError("Reload before editing.");
     });
     view(
       <DraftWizard
@@ -190,7 +190,7 @@ describe("registration and assessment wizard", () => {
     });
     view(<PatientForm kind="REGISTRATION" account={patient} />);
     expect((await screen.findByRole("alert")).textContent).toBe(
-      "Temporarily unavailable",
+      "We couldn’t complete your request. Please try again shortly.",
     );
     await userEvent
       .setup()

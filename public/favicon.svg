@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="17 13 67 67" role="img" aria-labelledby="title">
   <title id="title">Fortified Elite Care open door mark</title>
   <style>
-    svg { color: #30234D; }
-    circle { fill: #A35432; }
+    svg { color: #2E8B57; }
+    circle { fill: #F2A93B; }
     @media (prefers-color-scheme: dark) {
-      svg { color: #FFF8EF; }
-      circle { fill: #FFBC9C; }
+      svg { color: #FFFFFF; }
+      circle { fill: #F2A93B; }
     }
   </style>
   <g fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round">
@@ -13,4 +13,4 @@
     <path d="M44 68V46a6 6 0 0 1 12 0v9c0 8 6 14 14 14h4"/>
   </g>
   <circle cx="71" cy="43" r="7.5"/>
-</svg>\n
+</svg>

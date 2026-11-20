@@ -7,6 +7,8 @@ import { api, messageFor, readResponse } from "../../shared/api/client";
 import { ErrorMessage } from "../../shared/ui/Feedback";
 import { AuthLayout } from "./components/AuthLayout";
 import type { Props } from "./types";
+import type { components } from "../../shared/api/schema";
+import { MonthlyDayField } from "../scheduling/MonthlyDayField";
 
 const consentChoices = [
   ["healthAssessment", "Routine health assessments"],
@@ -17,13 +19,11 @@ const consentChoices = [
   ["emergencyContact", "Contacting your emergency contact"],
 ] as const;
 
-function todayInLagos() {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Lagos" }).format(
-    new Date(),
-  );
-}
-
-export function Register({ account, onAccount }: Props) {
+export function Register({
+  account,
+  onAccount,
+  googleProfile,
+}: Props & { googleProfile?: components["schemas"]["GoogleProfileView"] }) {
   const [params] = useSearchParams();
   const requestedRole = params.get("role");
   const [role, setRole] = useState<"patient" | "doctor" | null>(
@@ -33,17 +33,19 @@ export function Register({ account, onAccount }: Props) {
   );
   const [step, setStep] = useState(1);
   const [details, setDetails] = useState({
-    name: "",
-    email: "",
+    name: googleProfile?.name ?? "",
+    email: googleProfile?.email ?? "",
     password: "",
     area: "",
-    preferredDate: "",
+    preferredDayOfMonth: "",
     sponsorName: "",
     credentialId: "",
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [registeredPatient, setRegisteredPatient] = useState(false);
+  const [verification, setVerification] = useState(false);
+  if (verification) return <Navigate to="/verify-email" replace />;
   if (account)
     return (
       <Navigate
@@ -74,36 +76,53 @@ export function Register({ account, onAccount }: Props) {
       name,
       area,
       credentialId,
-      preferredDate,
+      preferredDayOfMonth,
       sponsorName,
     } = details;
     setBusy(true);
     try {
       const base = { email, password, name, area };
       if (role === "doctor") {
-        onAccount(
-          readResponse(
-            await api.POST("/auth/register/doctor", {
-              body: { ...base, credentialId },
-            }),
-          ),
+        const result = readResponse(
+          googleProfile
+            ? await api.POST("/auth/google/register/doctor", {
+                body: { name, area, credentialId },
+              })
+            : await api.POST("/auth/register/doctor", {
+                body: { ...base, credentialId },
+              }),
         );
+        if (result.challenge) setVerification(true);
+        else if (result.account) onAccount(result.account);
       } else {
         const choices = Object.fromEntries(
           consentChoices.map(([key]) => [key, form.get(key) === "yes"]),
         ) as Pick<PatientInput, (typeof consentChoices)[number][0]>;
-        const patient = readResponse(
-          await api.POST("/auth/register/patient", {
-            body: {
-              ...base,
-              preferredDate,
-              sponsorName: sponsorName.trim() || undefined,
-              ...choices,
-            },
-          }),
+        const result = readResponse(
+          googleProfile
+            ? await api.POST("/auth/google/register/patient", {
+                body: {
+                  name,
+                  area,
+                  preferredDayOfMonth: Number(preferredDayOfMonth),
+                  sponsorName: sponsorName.trim() || undefined,
+                  ...choices,
+                },
+              })
+            : await api.POST("/auth/register/patient", {
+                body: {
+                  ...base,
+                  preferredDayOfMonth: Number(preferredDayOfMonth),
+                  sponsorName: sponsorName.trim() || undefined,
+                  ...choices,
+                },
+              }),
         );
-        setRegisteredPatient(true);
-        onAccount(patient);
+        if (result.challenge) setVerification(true);
+        else if (result.account) {
+          setRegisteredPatient(true);
+          onAccount(result.account);
+        }
       }
     } catch (error) {
       setError(messageFor(error));
@@ -176,21 +195,26 @@ export function Register({ account, onAccount }: Props) {
                     onChange={(event) => update("email", event.target.value)}
                     required
                     maxLength={254}
+                    readOnly={Boolean(googleProfile)}
                   />
                 </label>
-                <label>
-                  Password
-                  <input
-                    type="password"
-                    autoComplete="new-password"
-                    value={details.password}
-                    onChange={(event) => update("password", event.target.value)}
-                    minLength={12}
-                    maxLength={128}
-                    required
-                  />
-                  <small>Use at least 12 characters.</small>
-                </label>
+                {!googleProfile && (
+                  <label>
+                    Password
+                    <input
+                      type="password"
+                      autoComplete="new-password"
+                      value={details.password}
+                      onChange={(event) =>
+                        update("password", event.target.value)
+                      }
+                      minLength={12}
+                      maxLength={128}
+                      required
+                    />
+                    <small>Use at least 12 characters.</small>
+                  </label>
+                )}
                 <label>
                   {role === "doctor"
                     ? "Area you cover for home visits"
@@ -218,18 +242,10 @@ export function Register({ account, onAccount }: Props) {
                   </label>
                 ) : (
                   <>
-                    <label>
-                      Preferred visit date
-                      <input
-                        type="date"
-                        min={todayInLagos()}
-                        value={details.preferredDate}
-                        onChange={(event) =>
-                          update("preferredDate", event.target.value)
-                        }
-                        required
-                      />
-                    </label>
+                    <MonthlyDayField
+                      value={details.preferredDayOfMonth}
+                      onChange={(value) => update("preferredDayOfMonth", value)}
+                    />
                     <label>
                       Sponsor name <small>(optional)</small>
                       <input
