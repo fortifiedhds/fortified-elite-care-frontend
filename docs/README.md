@@ -1,5 +1,7 @@
 # Fortified Elite Care web documentation
 
+See [password recovery](password-recovery.md) for forgot-password screens, OTP verification, Google-only accounts, expiry and deployment.
+
 See [session security](session-security.md) for CSRF transport, inactivity warnings, draft recovery, OTP global logout and MVP hosting settings.
 
 See [doctor certificates](doctor-certificates.md) for the two-stage registration flow, required uploads, private downloads and admin review.

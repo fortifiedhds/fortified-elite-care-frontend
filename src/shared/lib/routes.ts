@@ -26,6 +26,8 @@ const authPaths = new Set([
   "/login",
   "/register",
   "/account-help",
+  "/forgot-password",
+  "/reset-password",
   "/verify-email",
   "/google/onboarding",
 ]);
@@ -50,6 +52,8 @@ const portalPaths = new Set([
 const adminPaths = new Set([
   "",
   "/verify-email",
+  "/forgot-password",
+  "/reset-password",
   "/enrolments",
   "/visits",
   "/extra-requests",

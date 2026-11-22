@@ -372,6 +372,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/password-recovery/request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["requestPasswordRecovery"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/password-recovery/challenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getRecoveryChallenge"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/password-recovery/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["verifyPasswordRecovery"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/password-recovery/grant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPasswordResetGrant"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/password-recovery/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["completePasswordRecovery"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/visits": {
         parameters: {
             query?: never;
@@ -964,7 +1044,7 @@ export interface components {
             token: string;
         };
         /** @enum {string} */
-        ChallengePurpose: "SESSION_REVOKE" | "SIGNUP" | "VERIFY_EMAIL" | "GOOGLE_LINK" | "GOOGLE_EMAIL" | "PASSWORD_CHANGE" | "ADMIN_CHANGE" | "ADMIN_LOGIN";
+        ChallengePurpose: "PASSWORD_RESET" | "SESSION_REVOKE" | "SIGNUP" | "VERIFY_EMAIL" | "GOOGLE_LINK" | "GOOGLE_EMAIL" | "PASSWORD_CHANGE" | "ADMIN_CHANGE" | "ADMIN_LOGIN";
         ChallengeView: {
             email: string;
             purpose: components["schemas"]["ChallengePurpose"];
@@ -1057,6 +1137,25 @@ export interface components {
             area: string;
             /** @description MDCN Folio Number */
             credentialId: string;
+        };
+        RecoveryRequestInput: {
+            /** Format: email */
+            email: string;
+            /** @default false */
+            admin: boolean;
+        };
+        RecoveryChallengeView: {
+            challenge?: components["schemas"]["ChallengeView"];
+            admin?: boolean;
+        };
+        RecoveryGrantView: {
+            /** Format: date-time */
+            expiresAt: string;
+            admin: boolean;
+        };
+        RecoveryPasswordInput: {
+            newPassword: string;
+            confirmPassword: string;
         };
         RoutineVisitInput: {
             /** @example 2027-01 */
@@ -1780,6 +1879,113 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AuthResult"];
+                };
+            };
+        };
+    };
+    requestPasswordRecovery: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecoveryRequestInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChallengeView"];
+                };
+            };
+        };
+    };
+    getRecoveryChallenge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecoveryChallengeView"];
+                };
+            };
+        };
+    };
+    verifyPasswordRecovery: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CodeInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecoveryGrantView"];
+                };
+            };
+        };
+    };
+    getPasswordResetGrant: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecoveryGrantView"];
+                };
+            };
+        };
+    };
+    completePasswordRecovery: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecoveryPasswordInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": boolean;
                 };
             };
         };

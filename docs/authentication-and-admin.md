@@ -6,6 +6,8 @@ All password fields use `src/shared/ui/PasswordInput.tsx`: public/admin sign-in,
 
 ## Verification recovery
 
+For forgotten passwords, use the separate [password recovery flow](password-recovery.md). It supports both existing-password and Google-only accounts, verifies an email OTP, then offers a new-password screen. Administrators use the console-specific recovery routes.
+
 The verification page fetches the browser-bound challenge before displaying the code input. Email delivery alone does not replace that binding. A failed lookup offers **Try again**; signup also offers **Restart registration** for the originally selected patient or doctor role. Router state carries only the selected role. Administrator recovery continues to use the console sign-in route.
 
 For direct Vercel-to-Render requests, set `NODE_ENV=production` and `COOKIE_SAME_SITE=none` on the backend, redeploy and start a fresh signup/sign-in request. The API client already includes credentials. CORS approval does not override SameSite restrictions, and browsers that block third-party cookies can still reject `SameSite=None`. The shared-domain MVP avoids that cross-site dependency.

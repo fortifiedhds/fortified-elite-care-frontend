@@ -2340,6 +2340,7 @@ h2 {
   }
   .auth-shell {
     grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
   }
   .auth-story {
     position: static;

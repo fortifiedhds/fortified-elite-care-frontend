@@ -144,6 +144,14 @@ export function Login({
           />
         </label>
         <ErrorMessage>{error}</ErrorMessage>
+        <Link
+          className="text-link"
+          to={
+            admin ? adminConsolePath + "/forgot-password" : "/forgot-password"
+          }
+        >
+          Forgot password?
+        </Link>
         <button className="button primary" disabled={busy}>
           {busy ? "Signing in…" : "Sign in"}
           <ArrowRight size={17} aria-hidden="true" />

@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/:page(about|how-it-works|services|for-families|for-doctors|faq|contact|privacy|terms|login|register|account-help|verify-email)",
+      "source": "/:page(about|how-it-works|services|for-families|for-doctors|faq|contact|privacy|terms|login|register|account-help|forgot-password|reset-password|verify-email)",
       "destination": "/index.html"
     },
     { "source": "/google/onboarding", "destination": "/index.html" },
@@ -17,7 +17,7 @@
     { "source": "/portal/assigned/:id/baseline", "destination": "/index.html" },
     { "source": "/console-7c6e4b9f2a83", "destination": "/index.html" },
     {
-      "source": "/console-7c6e4b9f2a83/:section(verify-email|enrolments|visits|extra-requests|administrators|notifications|documents|settings)",
+      "source": "/console-7c6e4b9f2a83/:section(verify-email|forgot-password|reset-password|enrolments|visits|extra-requests|administrators|notifications|documents|settings)",
       "destination": "/index.html"
     },
     {

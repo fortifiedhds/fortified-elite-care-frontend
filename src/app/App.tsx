@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AccountHelp } from "../features/auth/AccountHelp";
+import { ForgotPassword } from "../features/auth/ForgotPassword";
+import { ResetPassword } from "../features/auth/ResetPassword";
 import { Login } from "../features/auth/Login";
 import { Register } from "../features/auth/Register";
 import { VerifyEmail } from "../features/auth/VerifyEmail";
@@ -93,6 +95,19 @@ export function App() {
           ))}
         <Route path="/login" element={<Login {...identity} />} />
         <Route path="/account-help" element={<AccountHelp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/reset-password"
+          element={<ResetPassword onSignOut={onSignOut} />}
+        />
+        <Route
+          path={adminConsolePath + "/forgot-password"}
+          element={<ForgotPassword admin />}
+        />
+        <Route
+          path={adminConsolePath + "/reset-password"}
+          element={<ResetPassword admin onSignOut={onSignOut} />}
+        />
         <Route path="/register" element={<Register {...identity} />} />
         <Route
           path="/verify-email"
