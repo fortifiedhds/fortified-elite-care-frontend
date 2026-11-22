@@ -66,7 +66,10 @@ export function VerifyEmail({ onAccount }: Pick<Props, "onAccount">) {
                   : challenge.purpose === "SIGNUP" &&
                       result.account.role === "PATIENT"
                     ? "/portal/registration"
-                    : "/portal",
+                    : result.account.role === "DOCTOR" &&
+                        result.account.reviewStatus === "PENDING"
+                      ? "/portal/credentials"
+                      : "/portal",
                 { replace: true },
               );
             }

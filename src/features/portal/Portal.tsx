@@ -23,6 +23,7 @@ import { AdminDocuments } from "../files/AdminDocuments";
 import { Administrators } from "./admin/Administrators";
 import { Inbox } from "./notifications/Inbox";
 import { Overview } from "./Overview";
+import { DoctorCredentials } from "../doctor-credentials/DoctorCredentials";
 import {
   PatientSummaries,
   PatientVisitDetail,
@@ -136,6 +137,10 @@ export function Portal({
     account.role === "ADMIN"
       ? matchPath(basePath + "/enrolments/:id/review", location.pathname)
       : null;
+  const certificatesMatch =
+    account.role === "ADMIN"
+      ? matchPath(basePath + "/enrolments/:id/credentials", location.pathname)
+      : null;
   const patientVisit =
     account.role === "PATIENT"
       ? matchPath("/portal/appointments/:id", location.pathname)
@@ -147,7 +152,7 @@ export function Portal({
   const parentPath =
     baselineMatch || doctorVisit
       ? "assigned"
-      : reviewMatch
+      : reviewMatch || certificatesMatch
         ? "enrolments"
         : patientVisit
           ? "appointments"
@@ -175,6 +180,13 @@ export function Portal({
         <p role="status">Loading your workspace…</p>
       );
     const props = { data, act, busy };
+    if (certificatesMatch?.params.id)
+      return (
+        <DoctorCredentials
+          key={certificatesMatch.params.id}
+          doctorId={certificatesMatch.params.id}
+        />
+      );
     if (baselineMatch?.params.id)
       return (
         <ClinicianBaseline
@@ -238,6 +250,8 @@ export function Portal({
         return <Inbox {...props} />;
       case "settings":
         return <Settings />;
+      case "credentials":
+        return <DoctorCredentials />;
       case "documents":
         return account.role === "ADMIN" ? (
           <AdminDocuments account={currentAccount} />
@@ -322,11 +336,13 @@ export function Portal({
               <h1>
                 {baselineMatch
                   ? "Clinician baseline assessment"
-                  : reviewMatch
-                    ? "Registration review"
-                    : patientVisit || doctorVisit
-                      ? "Appointment details"
-                      : current.label}
+                  : certificatesMatch
+                    ? "Doctor application review"
+                    : reviewMatch
+                      ? "Registration review"
+                      : patientVisit || doctorVisit
+                        ? "Appointment details"
+                        : current.label}
               </h1>
             </div>
             {data && (

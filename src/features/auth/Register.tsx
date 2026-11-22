@@ -53,7 +53,13 @@ export function Register({
   if (account)
     return (
       <Navigate
-        to={registeredPatient ? "/portal/registration" : "/portal"}
+        to={
+          account.role === "DOCTOR" && account.reviewStatus === "PENDING"
+            ? "/portal/credentials"
+            : registeredPatient
+              ? "/portal/registration"
+              : "/portal"
+        }
         replace
       />
     );
@@ -147,7 +153,9 @@ export function Register({
       subtitle={
         step === 2
           ? "Choose what you agree to. The care team will review your choices during enrolment."
-          : "Enrol as a patient or apply to join as a doctor. The care team reviews each application."
+          : role === "doctor"
+            ? "Step 1 of 2: enter your details. After verifying your email, upload your university medical certificate and MDCN Certificate of Registration to complete your application."
+            : "Enrol as a patient or apply to join as a doctor. The care team reviews each application."
       }
     >
       <form className="stack" onSubmit={submit}>
@@ -232,7 +240,7 @@ export function Register({
                 </label>
                 {role === "doctor" ? (
                   <label>
-                    Professional registration or licence number
+                    MDCN Folio Number
                     <input
                       value={details.credentialId}
                       onChange={(event) =>
@@ -305,7 +313,11 @@ export function Register({
               ? "Creating account…"
               : role === "patient" && step === 1
                 ? "Continue to care permissions"
-                : "Submit application"}{" "}
+                : role === "doctor"
+                  ? googleProfile
+                    ? "Continue to certificates"
+                    : "Verify email and continue"
+                  : "Submit application"}{" "}
             <ArrowRight size={17} aria-hidden="true" />
           </button>
         </div>

@@ -101,7 +101,9 @@ export function Overview({ data }: { data: Dashboard }) {
         <h2>Welcome, {data.account.name}</h2>
         <p>
           {data.account.reviewStatus === "PENDING"
-            ? "Your enrolment is awaiting care team review."
+            ? role === "DOCTOR" && !data.credentialsSubmitted
+              ? "Upload both medical certificates to complete your application."
+              : "Your enrolment is awaiting care team review."
             : role === "ADMIN"
               ? "Review enrolments, coordinate home visits, and manage exceptions."
               : role === "DOCTOR"
@@ -115,6 +117,18 @@ export function Overview({ data }: { data: Dashboard }) {
           </span>
         )}
       </section>
+      {role === "DOCTOR" &&
+        data.account.reviewStatus === "PENDING" &&
+        !data.credentialsSubmitted && (
+          <Panel
+            title="Complete your doctor application"
+            detail="Your university medical certificate and MDCN Certificate of Registration are required."
+          >
+            <TextLink to={portalPath("credentials")}>
+              Upload your certificates
+            </TextLink>
+          </Panel>
+        )}
       {nextVisit && (
         <Panel
           title="Your next assigned visit"

@@ -52,7 +52,8 @@ export function Enrolments({
                 <p>
                   {account.role === "DOCTOR" ? "Doctor" : "Patient"} ·{" "}
                   {account.area}
-                  {account.credentialId && ` · ${account.credentialId}`}
+                  {account.credentialId &&
+                    ` · MDCN Folio Number: ${account.credentialId}`}
                 </p>
                 {account.role === "PATIENT" && (
                   <Link
@@ -62,9 +63,34 @@ export function Enrolments({
                     View submitted registration
                   </Link>
                 )}
+                {account.role === "DOCTOR" && (
+                  <p className="muted">
+                    {account.credentialsSubmitted
+                      ? "Both certificates submitted"
+                      : "Certificates required"}
+                  </p>
+                )}
+                {account.role === "DOCTOR" &&
+                  account.reviewStatus === "APPROVED" && (
+                    <Link
+                      className="text-link"
+                      to={portalPath(
+                        "enrolments/" + account.id + "/credentials",
+                      )}
+                    >
+                      View certificates
+                    </Link>
+                  )}
               </div>
               {account.reviewStatus === "APPROVED" ? (
                 <span className="status completed">Approved</span>
+              ) : account.role === "DOCTOR" ? (
+                <Link
+                  className="button outline small"
+                  to={portalPath("enrolments/" + account.id + "/credentials")}
+                >
+                  Review certificates
+                </Link>
               ) : (
                 <button
                   className="button primary small"

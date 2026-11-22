@@ -7,7 +7,7 @@
     { "source": "/google/onboarding", "destination": "/index.html" },
     { "source": "/portal", "destination": "/index.html" },
     {
-      "source": "/portal/:section(checkups|appointments|history|summaries|registration|baseline|consent|agreement|payments|available|assigned|notifications|documents|settings)",
+      "source": "/portal/:section(checkups|appointments|history|summaries|registration|baseline|consent|agreement|payments|available|assigned|notifications|documents|credentials|settings)",
       "destination": "/index.html"
     },
     {
@@ -21,7 +21,7 @@
       "destination": "/index.html"
     },
     {
-      "source": "/console-7c6e4b9f2a83/enrolments/:id/review",
+      "source": "/console-7c6e4b9f2a83/enrolments/:id/:page(review|credentials)",
       "destination": "/index.html"
     }
   ]

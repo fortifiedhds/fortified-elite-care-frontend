@@ -253,7 +253,7 @@ describe("sign-in and enrolment", () => {
       ["Email address", doctor.email],
       ["Password", "synthetic passphrase"],
       ["Area you cover for home visits", "Central"],
-      ["Professional registration or licence number", "MDCN123"],
+      ["MDCN Folio Number", "MDCN123"],
     ])
       fireEvent.change(
         screen.getByLabelText(
@@ -262,7 +262,7 @@ describe("sign-in and enrolment", () => {
         { target: { value } },
       );
     await user.click(
-      screen.getByRole("button", { name: "Submit application" }),
+      screen.getByRole("button", { name: "Verify email and continue" }),
     );
     expect(post).toHaveBeenCalledWith("/auth/register/doctor", {
       body: {

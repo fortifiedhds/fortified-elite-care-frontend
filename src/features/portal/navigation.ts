@@ -47,6 +47,7 @@ export const navigation: Record<Account["role"], Tab[]> = {
   ],
   DOCTOR: [
     overview,
+    { path: "credentials", label: "My application", icon: FileText },
     { path: "available", label: "Available requests", icon: CalendarDays },
     { path: "assigned", label: "Assigned visits", icon: ClipboardCheck },
     inbox,

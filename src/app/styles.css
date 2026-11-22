@@ -981,6 +981,42 @@ input[type="radio"] {
   height: 17px;
   margin: 0;
 }
+.certificate-review {
+  overflow-wrap: anywhere;
+}
+.certificate-review .status {
+  justify-self: start;
+}
+.certificate-upload {
+  padding: 18px;
+  border: 1px dashed var(--control-border);
+  border-radius: 12px;
+}
+.certificate-upload input::file-selector-button {
+  margin-right: 12px;
+  padding: 7px 10px;
+  border: 1px solid var(--control-border);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.certificate-confirmation {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 44px;
+  padding: 12px 0;
+  cursor: pointer;
+}
+.certificate-confirmation input {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  margin: 3px 0 0;
+  accent-color: var(--brand-strong);
+}
 .password-field {
   position: relative;
   display: block;

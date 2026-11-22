@@ -220,12 +220,14 @@ describe("verification recovery", () => {
       ["Email address", "doctor@example.test"],
       ["Password", "synthetic passphrase"],
       ["Area you cover for home visits", "Central"],
-      ["Professional registration or licence number", "MDCN123"],
+      ["MDCN Folio Number", "MDCN123"],
     ])
       fireEvent.change(screen.getByLabelText(new RegExp("^" + label)), {
         target: { value },
       });
-    fireEvent.click(screen.getByRole("button", { name: "Submit application" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Verify email and continue" }),
+    );
     await screen.findByText(/We couldn’t resume/);
     expect(
       screen

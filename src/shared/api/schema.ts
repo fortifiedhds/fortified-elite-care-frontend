@@ -596,6 +596,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/health/live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["live"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -740,6 +756,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/doctors/credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getDoctorCredentials"];
+        put?: never;
+        post: operations["submitDoctorCredentials"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/doctors/{id}/credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getAdminDoctorCredentials"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/doctors/credentials/{kind}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["downloadOwnDoctorCertificate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/doctors/{id}/credentials/{kind}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["downloadAdminDoctorCertificate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -789,6 +869,7 @@ export interface components {
             reviewStatus: components["schemas"]["ReviewStatus"];
             area: string;
             credentialId?: string;
+            credentialsSubmitted?: boolean;
         };
         SupportView: {
             id: string;
@@ -813,6 +894,7 @@ export interface components {
             support: components["schemas"]["SupportView"][];
             notifications: components["schemas"]["NotificationView"][];
             preferredDayOfMonth?: number;
+            credentialsSubmitted?: boolean;
         };
         PatientInput: {
             /** Format: email */
@@ -856,7 +938,7 @@ export interface components {
             name: string;
             /** @example Ibadan North */
             area: string;
-            /** @description Professional registration or licence number */
+            /** @description MDCN Folio Number */
             credentialId: string;
         };
         LoginInput: {
@@ -906,7 +988,7 @@ export interface components {
             name: string;
             /** @example Ibadan North */
             area: string;
-            /** @description Professional registration or licence number */
+            /** @description MDCN Folio Number */
             credentialId: string;
         };
         RoutineVisitInput: {
@@ -923,6 +1005,10 @@ export interface components {
             };
             observations: string;
             summary: string;
+        };
+        ApprovalInput: {
+            /** @description Required for doctors: the certificate revision reviewed by the admin. */
+            credentialsRevision?: number;
         };
         MonthlyPreferenceInput: {
             /** @example 15 */
@@ -1125,6 +1211,26 @@ export interface components {
         ContactResult: {
             /** @enum {boolean} */
             sent: true;
+        };
+        /** @enum {string} */
+        DoctorCertificateKind: "MEDICAL_DEGREE" | "MDCN_REGISTRATION";
+        CertificateView: {
+            kind: components["schemas"]["DoctorCertificateKind"];
+            name: string;
+            bytes: number;
+            format: string;
+        };
+        DoctorCredentialsView: {
+            /** Format: uuid */
+            doctorId: string;
+            name: string;
+            /** @description MDCN Folio Number */
+            credentialId: string;
+            reviewStatus: components["schemas"]["ReviewStatus"];
+            revision: number;
+            /** Format: date-time */
+            submittedAt: string | null;
+            certificates: components["schemas"]["CertificateView"][];
         };
     };
     responses: never;
@@ -1699,7 +1805,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ApprovalInput"];
+            };
+        };
         responses: {
             200: {
                 headers: {
@@ -2050,6 +2160,27 @@ export interface operations {
             };
         };
     };
+    live: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        alive: boolean;
+                    };
+                };
+            };
+        };
+    };
     check: {
         parameters: {
             query?: never;
@@ -2284,6 +2415,113 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ContactResult"];
                 };
+            };
+        };
+    };
+    getDoctorCredentials: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DoctorCredentialsView"];
+                };
+            };
+        };
+    };
+    submitDoctorCredentials: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    medicalDegree: string;
+                    /** Format: binary */
+                    mdcnRegistration: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DoctorCredentialsView"];
+                };
+            };
+        };
+    };
+    getAdminDoctorCredentials: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DoctorCredentialsView"];
+                };
+            };
+        };
+    };
+    downloadOwnDoctorCertificate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                kind: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    downloadAdminDoctorCertificate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                kind: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

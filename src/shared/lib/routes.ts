@@ -44,6 +44,7 @@ const portalPaths = new Set([
   "/portal/assigned",
   "/portal/notifications",
   "/portal/documents",
+  "/portal/credentials",
   "/portal/settings",
 ]);
 const adminPaths = new Set([
@@ -114,7 +115,7 @@ export function isAppRoute(pathname: string, surface: Surface) {
   const adminRoute =
     path.startsWith(adminConsolePath) &&
     (adminPaths.has(adminPath) ||
-      /^\/enrolments\/[^/]+\/review$/.test(adminPath));
+      /^\/enrolments\/[^/]+\/(review|credentials)$/.test(adminPath));
   if (surface === "public") return publicRoute;
   if (surface === "dashboard") return path === "/" || careRoute;
   if (surface === "admin") return adminRoute;

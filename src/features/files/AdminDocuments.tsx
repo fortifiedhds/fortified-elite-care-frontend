@@ -26,8 +26,21 @@ const choiceLabels: Record<string, string> = {
 
 export function AdminDocuments({ account }: { account: Account }) {
   const [tab, setTab] = useState<"submitted" | "private">("submitted");
+  const portalPath = usePortalPath();
   return (
     <div className="stack">
+      {canAdmin(account, "ENROLMENTS_MANAGE") && (
+        <section className="panel stack">
+          <h2>Doctor certificates</h2>
+          <p>
+            Review university medical certificates and MDCN Certificates of
+            Registration with each doctor application.
+          </p>
+          <Link className="text-link" to={portalPath("enrolments")}>
+            Open enrolment reviews
+          </Link>
+        </section>
+      )}
       <div
         className="actions document-tabs"
         role="group"

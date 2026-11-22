@@ -40,6 +40,12 @@ export function CareDocuments({ account }: { account: Account }) {
       ]
     : [
         {
+          title: "Medical certificates",
+          detail:
+            "Submit and download your university medical certificate and MDCN Certificate of Registration.",
+          path: "credentials",
+        },
+        {
           title: "Consultation notes and assessments",
           detail:
             "Open an assigned visit to complete, save and sign its digital consultation note or baseline assessment.",

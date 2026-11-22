@@ -90,8 +90,10 @@ describe("Google login and first-time onboarding", () => {
     ).toBe(true);
     expect(screen.queryByLabelText(/Password/)).toBeNull();
     change("Area you cover for home visits", "Central");
-    change("Professional registration or licence number", "MDCN123");
-    fireEvent.click(screen.getByRole("button", { name: "Submit application" }));
+    change("MDCN Folio Number", "MDCN123");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Continue to certificates" }),
+    );
     await waitFor(() =>
       expect(onAccount).toHaveBeenCalledWith(pending(doctor)),
     );
