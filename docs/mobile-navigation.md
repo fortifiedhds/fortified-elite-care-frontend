@@ -8,6 +8,8 @@ The public menu activates at 1050px and below. It slides upward into a fixed pan
 
 Portal menus activate at 800px and below. The sidebar becomes a fixed panel beneath the portal header, using the same white background. Its explicit dynamic viewport height keeps both short admin menus and long patient menus within the screen. A long menu scrolls independently. Larger viewports keep the normal desktop navigation/sidebar.
 
+On mobile, the logo sits at the left and the hamburger/close control sits at the right. Sign out appears inside the expanded menu, below the navigation links. Desktop keeps its header Sign out button. Hidden duplicate actions are excluded from keyboard navigation and assistive technology.
+
 The navbar stays visible so the logo and close button remain available. Header height and the border determine the panel’s top edge. The portal header height is declared once using --portal-header-height.
 
 ## Lifecycle and accessibility

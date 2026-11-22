@@ -4,13 +4,23 @@ import {
   fireEvent,
   screen,
   within,
+  waitFor,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useNavigate } from "react-router-dom";
+import { adminConsolePath } from "../../src/shared/lib/routes";
 import { PublicHeader } from "../../src/features/public/components/PublicLayout";
 import { Portal } from "../../src/features/portal/Portal";
-import { dashboard, ok, patient, reply, view } from "../fixtures";
+import {
+  admin,
+  doctor,
+  dashboard,
+  ok,
+  patient,
+  reply,
+  view,
+} from "../fixtures";
 
 function mobileViewport() {
   const listeners = new Set<(event: MediaQueryListEvent) => void>();
@@ -39,6 +49,42 @@ function mobileViewport() {
     );
   };
 }
+
+describe("mobile portal account actions", () => {
+  it.each([patient, doctor, admin])(
+    "places sign out in the expanded menu for $role",
+    async (account) => {
+      mobileViewport();
+      reply("GET", { "/dashboard": ok(dashboard(account)) });
+      const post = reply("POST", { "/auth/logout": ok(true) }),
+        onSignOut = vi.fn();
+      const base = account.role === "ADMIN" ? adminConsolePath : "/portal";
+      view(
+        <Portal account={account} onSignOut={onSignOut} basePath={base} />,
+        base,
+      );
+      await screen.findByRole("heading", { name: "Welcome, " + account.name });
+      const header = screen
+        .getByRole("link", { name: "Fortified Elite Care home" })
+        .closest("header")!;
+      expect(
+        within(header).queryByRole("button", { name: "Sign out" }),
+      ).toBeNull();
+      const menu = within(header).getByRole("button", {
+        name: "Open portal navigation",
+      });
+      expect(menu.parentElement).toBe(header.querySelector(".header-inner"));
+      fireEvent.click(menu);
+      const panel = document.getElementById("portal-navigation")!;
+      const signOut = within(panel).getByRole("button", { name: "Sign out" });
+      fireEvent.click(signOut);
+      await waitFor(() => expect(onSignOut).toHaveBeenCalledTimes(1));
+      expect(post).toHaveBeenCalledWith("/auth/logout");
+      expect(panel.hidden).toBe(true);
+      expect(document.body.style.overflow).toBe("");
+    },
+  );
+});
 function PublicShell() {
   const navigate = useNavigate();
   return (

@@ -48,6 +48,7 @@ export function Portal({
   const [busy, setBusy] = useState(false);
   const {
     open: menuOpen,
+    mobile,
     toggle: toggleMenu,
     close: closeMenu,
     shellRef,
@@ -269,28 +270,23 @@ export function Portal({
     <div className="portal" ref={shellRef}>
       <header className="public-header">
         <div className="wrap header-inner">
-          <div className="actions">
-            <Brand />
-            <button
-              className="menu-toggle portal-mobile-menu"
-              ref={toggleRef}
-              aria-label={
-                menuOpen ? "Close portal navigation" : "Open portal navigation"
-              }
-              aria-controls="portal-navigation"
-              aria-expanded={menuOpen}
-              type="button"
-              onClick={toggleMenu}
-            >
-              {menuOpen ? (
-                <X aria-hidden="true" />
-              ) : (
-                <Menu aria-hidden="true" />
-              )}
-            </button>
-          </div>
+          <Brand />
           <button
-            className="button outline small"
+            className="menu-toggle portal-mobile-menu"
+            ref={toggleRef}
+            aria-label={
+              menuOpen ? "Close portal navigation" : "Open portal navigation"
+            }
+            aria-controls="portal-navigation"
+            aria-expanded={menuOpen}
+            type="button"
+            onClick={toggleMenu}
+          >
+            {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+          </button>
+          <button
+            className="button outline small portal-header-signout"
+            hidden={mobile}
             onClick={() => void signOut()}
             disabled={busy}
           >
@@ -323,6 +319,18 @@ export function Portal({
               </NavLink>
             ))}
           </nav>
+          <button
+            className="portal-menu-signout"
+            hidden={!mobile}
+            type="button"
+            disabled={busy}
+            onClick={() => {
+              closeMenu();
+              void signOut();
+            }}
+          >
+            <LogOut size={18} aria-hidden="true" /> Sign out
+          </button>
         </aside>
         <main
           className="portal-main page-enter"
