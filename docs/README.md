@@ -1,5 +1,7 @@
 # Fortified Elite Care web documentation
 
+See [first-party authentication](first-party-auth.md) for the Vercel API proxy, iPhone cookie fix, Google callback relay and release checks.
+
 See [password recovery](password-recovery.md) for forgot-password screens, OTP verification, Google-only accounts, expiry and deployment.
 
 See [session security](session-security.md) for CSRF transport, inactivity warnings, draft recovery, OTP global logout and MVP hosting settings.

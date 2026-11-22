@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/v1/:path*",
+      "destination": "https://fortified-elite-care-backend.onrender.com/api/v1/:path*"
+    },
+    {
       "source": "/:page(about|how-it-works|services|for-families|for-doctors|faq|contact|privacy|terms|login|register|account-help|forgot-password|reset-password|verify-email)",
       "destination": "/index.html"
     },

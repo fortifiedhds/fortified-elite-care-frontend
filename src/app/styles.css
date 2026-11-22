@@ -2085,6 +2085,28 @@ h2 {
 .auth-content-back {
   margin-bottom: 10px;
 }
+.auth-error-feedback {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.auth-support-details {
+  color: var(--muted);
+  font-size: 0.875rem;
+  min-width: 0;
+}
+.auth-support-details summary {
+  cursor: pointer;
+  width: fit-content;
+  padding-block: 4px;
+}
+.auth-support-details p {
+  margin-block: 8px;
+}
+.auth-support-details code {
+  display: block;
+  overflow-wrap: anywhere;
+}
 .portal-layout {
   width: min(100%, 1480px);
   gap: clamp(16px, 3vw, 45px);

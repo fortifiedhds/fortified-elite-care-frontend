@@ -1,10 +1,12 @@
 import createClient from "openapi-fetch";
 import type { components, paths } from "./schema";
 import { createSecureFetch } from "./security-fetch";
+import { resolveApiBase } from "./base-url";
 
-export const apiBase = (
-  import.meta.env.VITE_API_URL ?? "http://127.0.0.1:3000/api/v1"
-).replace(/\/$/, "");
+export const apiBase = resolveApiBase(
+  import.meta.env.VITE_API_URL,
+  window.location.origin,
+);
 
 export const api = createClient<paths>({
   baseUrl: apiBase,
@@ -21,7 +23,18 @@ export type NoteInput = components["schemas"]["NoteInput"];
 
 const requestFailed =
   "We couldn’t complete your request. Please try again shortly.";
-export class UserFacingError extends Error {}
+export class UserFacingError extends Error {
+  readonly code?: "CSRF_INVALID";
+  readonly supportReference?: string;
+  constructor(
+    message: string,
+    details?: { code: "CSRF_INVALID"; supportReference?: string },
+  ) {
+    super(message);
+    this.code = details?.code;
+    this.supportReference = details?.supportReference;
+  }
+}
 
 function safeMessage(message: string) {
   return (
@@ -51,11 +64,11 @@ export function readResponse<T>(result: {
       /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
         requestId,
       )
-        ? " Support reference: " + requestId + "."
-        : "";
+        ? requestId
+        : undefined;
     throw new UserFacingError(
-      "We couldn’t confirm your browser’s security check. Please try again." +
-        reference,
+      "We couldn’t complete this step on your device. Please contact our care team for help.",
+      { code: "CSRF_INVALID", supportReference: reference },
     );
   }
   const message =

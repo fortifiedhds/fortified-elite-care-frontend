@@ -2,7 +2,15 @@
 
 ## Diagnosing security-check failures
 
-The transport sends the CSRF bootstrap's validated `X-Request-ID` as `X-CSRF-Bootstrap-ID` on its following mutation. This is a correlation hint only; it does not change proof validation or retry an operation. Invalid/missing trace IDs are discarded. A `403 CSRF_INVALID` displays a safe message and a validated **Support reference** from the failed response header so mobile users can report the failure without developer tools. Passwords, OTPs, cookies and full diagnostic payloads never appear in that reference. See the backend [logging guide](../../fortified-elite-care-backend/docs/logging-and-debugging.md) for failure reasons and tracing a dropped cookie.
+The transport sends the CSRF bootstrap's validated `X-Request-ID` as `X-CSRF-Bootstrap-ID` on its following mutation. This is a correlation hint only; it does not change proof validation or retry an operation. Invalid/missing trace IDs are discarded. For `403 CSRF_INVALID`, `UserFacingError` retains the validated reference separately from its message. Public and admin login show **We’re having trouble signing you in on this device.**, a **Get help signing in** link to Contact, and a collapsed **Details for support** disclosure containing the reference. The UUID and technical checks do not appear in the main alert. The help link remains available without a reference; a fresh submission clears old support details. Other errors retain their normal wording. Passwords, OTPs, cookies and full diagnostic payloads never appear in the reference. See the backend [logging guide](../../fortified-elite-care-backend/docs/logging-and-debugging.md) for failure reasons and tracing a dropped cookie.
+
+### Missing cookies across Vercel and Render
+
+A fresh `CSRF_BOOTSTRAP` with `seedIssued: true`, followed by `COOKIE_MISSING`, `tokenHeaderPresent: true` and no cookie header, confirms that the issued cookie did not return. With `fetchSite: cross-site` and `cookieSameSite: none`/`secureCookie: true`, investigate browser storage restrictions rather than weakening proof validation. Repeating the same request may reproduce the failure.
+
+The implemented remedy is a [first-party Vercel API proxy](first-party-auth.md), including the frontend API base and a one-hop Google callback relay. It retains the existing Google Cloud/Render redirect URI while returning callback processing to the browser-visible frontend host before state validation. Deploy the backend first and frontend second. No cookie or CSRF validation is relaxed. The planned FEC subdomains also avoid unrelated-site cookies.
+
+References: [MDN third-party cookies](https://developer.mozilla.org/en-US/docs/Web/Privacy/Guides/Third-party_cookies), [Vercel external rewrites](https://vercel.com/docs/routing/rewrites).
 
 FEC uses server-validated cookie sessions. Authentication guards and role, admin-permission and record-access checks run in the backend.
 

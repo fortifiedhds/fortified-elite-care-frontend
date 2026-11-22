@@ -14,6 +14,7 @@ import {
   apiBase,
   messageFor,
   readResponse,
+  UserFacingError,
 } from "../../shared/api/client";
 import {
   adminConsolePath,
@@ -23,6 +24,7 @@ import { siteHref } from "../../shared/lib/sites";
 import { SiteRedirect } from "../../shared/ui/SiteRedirect";
 import { ErrorMessage } from "../../shared/ui/Feedback";
 import { AuthLayout } from "./components/AuthLayout";
+import { SignInFeedback } from "./components/SignInFeedback";
 import type { Props } from "./types";
 
 export function Login({
@@ -39,6 +41,7 @@ export function Login({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [support, setSupport] = useState<{ reference?: string } | null>(null);
   const [error, setError] = useState(
     params.has("google")
       ? "Google sign-in could not be completed. Please try again or use your password."
@@ -90,6 +93,7 @@ export function Login({
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setSupport(null);
     setBusy(true);
     try {
       const result = readResponse(
@@ -105,7 +109,10 @@ export function Login({
         });
       else if (result.account) onAccount(result.account);
     } catch (error) {
-      setError(messageFor(error));
+      if (error instanceof UserFacingError && error.code === "CSRF_INVALID") {
+        setError("We’re having trouble signing you in on this device.");
+        setSupport({ reference: error.supportReference });
+      } else setError(messageFor(error));
     } finally {
       setBusy(false);
     }
@@ -143,7 +150,7 @@ export function Login({
             required
           />
         </label>
-        <ErrorMessage>{error}</ErrorMessage>
+        <SignInFeedback message={error} support={support} />
         <Link
           className="text-link"
           to={
