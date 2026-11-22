@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AccountHelp } from "../features/auth/AccountHelp";
 import { Login } from "../features/auth/Login";
@@ -16,11 +16,30 @@ import { PublicHome } from "../features/public/PublicHome";
 import { PublicPage } from "../features/public/PublicPage";
 import type { Account } from "../shared/api/client";
 import { api } from "../shared/api/client";
+import { SessionSecurity } from "../features/session-security/SessionSecurity";
+import { sessionState } from "../shared/api/session-state";
+import {
+  DraftIdentity,
+  clearMemoryDrafts,
+} from "../features/session-security/draft-memory";
 
 export function App() {
   const [account, setAccount] = useState<Account | null>(null);
   const [loading, setLoading] = useState(true);
-  const onSignOut = useCallback(() => setAccount(null), []);
+  const previousAccount = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    if (account) {
+      if (previousAccount.current && previousAccount.current !== account.id)
+        clearMemoryDrafts();
+      previousAccount.current = account.id;
+    }
+  }, [account]);
+  const onSignOut = useCallback(() => {
+    clearMemoryDrafts();
+    sessionState.set(null);
+    setAccount(null);
+  }, []);
+  const onExpired = useCallback(() => setAccount(null), []);
   const location = useLocation();
 
   useEffect(() => {
@@ -48,7 +67,8 @@ export function App() {
   if (!isAppRoute(location.pathname, surface))
     return <NotFound signedIn={!!account} />;
   return (
-    <>
+    <DraftIdentity.Provider value={account?.id}>
+      {account && <SessionSecurity onExpired={onExpired} />}
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
@@ -108,12 +128,16 @@ export function App() {
             ) : account ? (
               <Portal account={account} onSignOut={onSignOut} />
             ) : (
-              <Navigate to="/login" replace />
+              <Navigate
+                to="/login"
+                state={{ returnTo: location.pathname }}
+                replace
+              />
             )
           }
         />
         <Route path="*" element={<NotFound signedIn={!!account} />} />
       </Routes>
-    </>
+    </DraftIdentity.Provider>
   );
 }

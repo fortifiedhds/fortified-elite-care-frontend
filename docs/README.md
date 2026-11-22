@@ -1,5 +1,7 @@
 # Fortified Elite Care web documentation
 
+See [session security](session-security.md) for CSRF transport, inactivity warnings, draft recovery, OTP global logout and MVP hosting settings.
+
 See [doctor certificates](doctor-certificates.md) for the two-stage registration flow, required uploads, private downloads and admin review.
 
 See [monthly scheduling](monthly-scheduling.md) for the recurring-day control and [document workflow audit](document-workflow-audit.md) for how the original CEO materials are used.

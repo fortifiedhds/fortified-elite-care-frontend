@@ -10,6 +10,7 @@ import {
 } from "../../../shared/api/client";
 import { ErrorMessage } from "../../../shared/ui/Feedback";
 import { Loading } from "../components/FormFields";
+import { useMemoryDraft } from "../../session-security/draft-memory";
 import { useLoad } from "../hooks/useFormResource";
 import type { Choices, ConsentView, Recipient } from "../types";
 
@@ -69,11 +70,17 @@ export function CarePermissions() {
 }
 
 function ConsentEditor({ initial }: { initial: ConsentView }) {
-  const [choices, setChoices] = useState(initial.choices);
-  const [recipients, setRecipients] = useState<Recipient[]>(
-    initial.recipients.length ? initial.recipients : [{ ...blankRecipient }],
-  );
   const [recordedAt, setRecordedAt] = useState(initial.recordedAt);
+  const [choices, setChoices] = useMemoryDraft(
+    initial.choices,
+    String(recordedAt),
+    "consent-choices",
+  );
+  const [recipients, setRecipients] = useMemoryDraft<Recipient[]>(
+    initial.recipients.length ? initial.recipients : [{ ...blankRecipient }],
+    String(recordedAt),
+    "consent-recipients",
+  );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);

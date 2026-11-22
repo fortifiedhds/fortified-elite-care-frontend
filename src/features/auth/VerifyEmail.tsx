@@ -9,6 +9,7 @@ import { api, messageFor, readResponse } from "../../shared/api/client";
 import { ErrorMessage } from "../../shared/ui/Feedback";
 import { adminConsolePath } from "../../shared/lib/admin";
 import { siteHref } from "../../shared/lib/sites";
+import { authReturnPath } from "../../shared/lib/auth-return";
 import { AuthLayout } from "./components/AuthLayout";
 import type { Props } from "./types";
 import { VerificationForm } from "./VerificationForm";
@@ -62,14 +63,16 @@ export function VerifyEmail({ onAccount }: Pick<Props, "onAccount">) {
               onAccount(result.account);
               navigate(
                 result.account.role === "ADMIN"
-                  ? adminConsolePath
+                  ? (authReturnPath(location.state?.returnTo, true) ??
+                      adminConsolePath)
                   : challenge.purpose === "SIGNUP" &&
                       result.account.role === "PATIENT"
                     ? "/portal/registration"
                     : result.account.role === "DOCTOR" &&
                         result.account.reviewStatus === "PENDING"
                       ? "/portal/credentials"
-                      : "/portal",
+                      : (authReturnPath(location.state?.returnTo, false) ??
+                        "/portal"),
                 { replace: true },
               );
             }

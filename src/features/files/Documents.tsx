@@ -3,6 +3,7 @@ import type { FormEvent } from "react";
 import {
   api,
   apiBase,
+  secureFetch,
   messageFor,
   readResponse,
 } from "../../shared/api/client";
@@ -41,7 +42,7 @@ export function Documents() {
     setError("");
     setNotice("");
     try {
-      const response = await fetch(apiBase + "/files", {
+      const response = await secureFetch(apiBase + "/files", {
         method: "POST",
         credentials: "include",
         body,

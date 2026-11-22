@@ -19,6 +19,15 @@
 }
 
 /* Theme, base controls and shared layouts */
+.session-warning {
+  position: fixed;
+  z-index: 100;
+  right: 16px;
+  bottom: 16px;
+  width: min(440px, calc(100vw - 32px));
+  box-shadow: 0 12px 40px #16302e30;
+  border: 2px solid var(--brand);
+}
 :root {
   font-family: "DM Sans", system-ui, sans-serif;
   color: var(--ink);

@@ -1,5 +1,6 @@
 import createClient from "openapi-fetch";
 import type { components, paths } from "./schema";
+import { createSecureFetch } from "./security-fetch";
 
 export const apiBase = (
   import.meta.env.VITE_API_URL ?? "http://127.0.0.1:3000/api/v1"
@@ -8,7 +9,9 @@ export const apiBase = (
 export const api = createClient<paths>({
   baseUrl: apiBase,
   credentials: "include",
+  fetch: createSecureFetch(apiBase),
 });
+export const secureFetch = createSecureFetch(apiBase);
 
 export type Account = components["schemas"]["AccountView"];
 export type Dashboard = components["schemas"]["DashboardView"];

@@ -1,5 +1,6 @@
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useMemoryDraft } from "../../session-security/draft-memory";
 import type { NoteInput, Visit } from "../../../shared/api/client";
 import { api, pathParams, readResponse } from "../../../shared/api/client";
 import { ErrorMessage } from "../../../shared/ui/Feedback";
@@ -17,19 +18,39 @@ export function NoteForm({
 }) {
   const [confirming, setConfirming] = useState(false);
   const [validation, setValidation] = useState("");
-  const [structured, setStructured] = useState<
-    NonNullable<NoteInput["structured"]>
-  >(visit.structured ?? {});
+  const initialNote: NoteInput = {
+    observations: visit.observations ?? "",
+    summary: visit.summary ?? "",
+    structured: visit.structured ?? {},
+  };
+  const [body, setBody] = useMemoryDraft<NoteInput>(
+    initialNote,
+    JSON.stringify(initialNote),
+    "consultation:" + visit.id,
+  );
+  const autosave = useRef(() => {});
+  autosave.current = () => {
+    if (!busy && JSON.stringify(body) !== JSON.stringify(initialNote))
+      void act(
+        async () =>
+          readResponse(
+            await api.PATCH("/visits/{id}/note", {
+              ...pathParams(visit.id),
+              body,
+            }),
+          ),
+        "Draft saved before session expiry.",
+      );
+  };
+  useEffect(() => {
+    const save = () => autosave.current();
+    window.addEventListener("fec:session-warning", save);
+    return () => window.removeEventListener("fec:session-warning", save);
+  }, []);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setValidation("");
-    const form = new FormData(event.currentTarget);
-    const body: NoteInput = {
-      observations: String(form.get("observations") ?? ""),
-      summary: String(form.get("summary") ?? ""),
-      structured,
-    };
     if (confirming) {
       if (!body.observations.trim() || !body.summary.trim()) {
         setValidation("Enter observations and a summary before signing.");
@@ -66,8 +87,10 @@ export function NoteForm({
       onChange={() => setConfirming(false)}
     >
       <ConsultationFields
-        value={structured}
-        update={setStructured}
+        value={body.structured ?? {}}
+        update={(structured) =>
+          setBody((previous) => ({ ...previous, structured }))
+        }
         disabled={busy}
       />
       <label>
@@ -76,7 +99,13 @@ export function NoteForm({
           name="observations"
           rows={3}
           maxLength={5000}
-          defaultValue={visit.observations}
+          value={body.observations}
+          onChange={(event) =>
+            setBody((previous) => ({
+              ...previous,
+              observations: event.target.value,
+            }))
+          }
         />
       </label>
       <label>
@@ -85,7 +114,13 @@ export function NoteForm({
           name="summary"
           rows={3}
           maxLength={2000}
-          defaultValue={visit.summary}
+          value={body.summary}
+          onChange={(event) =>
+            setBody((previous) => ({
+              ...previous,
+              summary: event.target.value,
+            }))
+          }
         />
       </label>
       <ErrorMessage>{validation}</ErrorMessage>

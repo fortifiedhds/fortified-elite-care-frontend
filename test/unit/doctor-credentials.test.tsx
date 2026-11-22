@@ -85,11 +85,19 @@ describe("doctor application certificates", () => {
   });
   it("requires both fields and submits one authenticated multipart request", async () => {
     reply("GET", { "/doctors/credentials": ok(application) });
-    const upload = vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify(complete), {
-        status: 201,
-        headers: { "content-type": "application/json" },
-      }),
+    const upload = vi.spyOn(globalThis, "fetch").mockImplementation(
+      async (url) =>
+        new Response(
+          JSON.stringify(
+            String(url).endsWith("/auth/csrf")
+              ? { token: "synthetic-csrf" }
+              : complete,
+          ),
+          {
+            status: 201,
+            headers: { "content-type": "application/json" },
+          },
+        ),
     );
     view(<DoctorCredentials />);
     const button = await screen.findByRole("button", {
@@ -99,8 +107,8 @@ describe("doctor application certificates", () => {
     await choose();
     fireEvent.submit(button.closest("form")!);
     await screen.findByText(/Both certificates have been submitted/);
-    expect(upload).toHaveBeenCalledTimes(1);
-    const [url, options] = upload.mock.calls[0];
+    expect(upload).toHaveBeenCalledTimes(2);
+    const [url, options] = upload.mock.calls[1];
     expect(url).toBe(apiBase + "/doctors/credentials");
     expect(options?.credentials).toBe("include");
     const body = options?.body as FormData;

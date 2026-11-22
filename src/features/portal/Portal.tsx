@@ -249,7 +249,7 @@ export function Portal({
       case "notifications":
         return <Inbox {...props} />;
       case "settings":
-        return <Settings />;
+        return <Settings onSignOut={onSignOut} />;
       case "credentials":
         return <DoctorCredentials />;
       case "documents":

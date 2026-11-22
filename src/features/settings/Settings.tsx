@@ -7,7 +7,7 @@ import { ErrorMessage } from "../../shared/ui/Feedback";
 import { VerificationForm } from "../auth/VerificationForm";
 import type { Challenge } from "../auth/VerificationForm";
 
-export function Settings() {
+export function Settings({ onSignOut }: { onSignOut?: () => void } = {}) {
   const [security, setSecurity] =
     useState<components["schemas"]["SecurityView"]>();
   const [challenge, setChallenge] = useState<Challenge>();
@@ -80,8 +80,23 @@ export function Settings() {
         <>
           <VerificationForm
             initial={challenge}
-            label="Confirm password update"
+            label={
+              challenge.purpose === "SESSION_REVOKE"
+                ? "Sign out all devices"
+                : "Confirm password update"
+            }
             verify={async (code) => {
+              if (challenge.purpose === "SESSION_REVOKE") {
+                readResponse(
+                  await api.POST("/auth/sessions/revoke/confirm", {
+                    body: { code },
+                  }),
+                );
+                setChallenge(undefined);
+                onSignOut?.();
+                setNotice("All devices have been signed out.");
+                return;
+              }
               readResponse(
                 await api.POST("/auth/password/confirm", { body: { code } }),
               );
@@ -96,7 +111,9 @@ export function Settings() {
             className="button outline"
             onClick={() => setChallenge(undefined)}
           >
-            Cancel password update
+            {challenge.purpose === "SESSION_REVOKE"
+              ? "Cancel sign-out"
+              : "Cancel password update"}
           </button>
         </>
       ) : security ? (
@@ -154,6 +171,38 @@ export function Settings() {
         </form>
       ) : (
         !error && <p role="status">Loading account settings…</p>
+      )}
+      {security && !challenge && (
+        <div className="stack">
+          <h3>Signed-in devices</h3>
+          <p>
+            Sign out every device, including this one. An email code will
+            confirm your request.
+          </p>
+          <div className="actions">
+            <button
+              type="button"
+              className="button outline"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                setError("");
+                setNotice("");
+                try {
+                  setChallenge(
+                    readResponse(await api.POST("/auth/sessions/revoke")),
+                  );
+                } catch (error) {
+                  setError(messageFor(error));
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              Sign out all devices
+            </button>
+          </div>
+        </div>
       )}
     </section>
   );

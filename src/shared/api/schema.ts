@@ -20,6 +20,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/csrf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["csrf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/session/continue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["continueSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/sessions/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["requestSessionRevocation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/sessions/revoke/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["confirmSessionRevocation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/register/patient": {
         parameters: {
             query?: never;
@@ -896,6 +960,22 @@ export interface components {
             preferredDayOfMonth?: number;
             credentialsSubmitted?: boolean;
         };
+        CsrfView: {
+            token: string;
+        };
+        /** @enum {string} */
+        ChallengePurpose: "SESSION_REVOKE" | "SIGNUP" | "VERIFY_EMAIL" | "GOOGLE_LINK" | "GOOGLE_EMAIL" | "PASSWORD_CHANGE" | "ADMIN_CHANGE" | "ADMIN_LOGIN";
+        ChallengeView: {
+            email: string;
+            purpose: components["schemas"]["ChallengePurpose"];
+            /** Format: date-time */
+            expiresAt: string;
+            /** Format: date-time */
+            resendAt: string;
+        };
+        CodeInput: {
+            code: string;
+        };
         PatientInput: {
             /** Format: email */
             email: string;
@@ -915,16 +995,6 @@ export interface components {
             education: boolean;
             referrals: boolean;
             emergencyContact: boolean;
-        };
-        /** @enum {string} */
-        ChallengePurpose: "SIGNUP" | "VERIFY_EMAIL" | "GOOGLE_LINK" | "GOOGLE_EMAIL" | "PASSWORD_CHANGE" | "ADMIN_CHANGE" | "ADMIN_LOGIN";
-        ChallengeView: {
-            email: string;
-            purpose: components["schemas"]["ChallengePurpose"];
-            /** Format: date-time */
-            expiresAt: string;
-            /** Format: date-time */
-            resendAt: string;
         };
         AuthResult: {
             account?: components["schemas"]["AccountView"];
@@ -950,9 +1020,6 @@ export interface components {
             google: boolean;
             email: boolean;
             uploads: boolean;
-        };
-        CodeInput: {
-            code: string;
         };
         SecurityView: {
             hasPassword: boolean;
@@ -1256,6 +1323,86 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DashboardView"];
+                };
+            };
+        };
+    };
+    csrf: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CsrfView"];
+                };
+            };
+        };
+    };
+    continueSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": boolean;
+                };
+            };
+        };
+    };
+    requestSessionRevocation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChallengeView"];
+                };
+            };
+        };
+    };
+    confirmSessionRevocation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CodeInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": boolean;
                 };
             };
         };

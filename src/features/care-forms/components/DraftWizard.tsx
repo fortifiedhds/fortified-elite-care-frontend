@@ -1,6 +1,7 @@
 import { ArrowRight, Check } from "lucide-react";
 import type { ReactNode } from "react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useMemoryDraft } from "../../session-security/draft-memory";
 import { Link, useNavigate } from "react-router-dom";
 import { messageFor } from "../../../shared/api/client";
 import { ErrorMessage } from "../../../shared/ui/Feedback";
@@ -26,7 +27,11 @@ export function DraftWizard({
 }) {
   const navigate = useNavigate();
   const [record, setRecord] = useState(initial);
-  const [answers, setAnswers] = useState<Answers>(initial.answers);
+  const [answers, setAnswers] = useMemoryDraft<Answers>(
+    initial.answers,
+    record.revision,
+    "wizard",
+  );
   const [step, setStep] = useState(() => {
     if (!initial.revision) return 0;
     const last = definition.sections.reduce(
@@ -54,8 +59,18 @@ export function DraftWizard({
     requestAnimationFrame(() => heading.current?.focus());
   }
 
-  async function save(submit: boolean, leave: boolean) {
-    if (busy || !form.current?.reportValidity()) return;
+  const autoSave = useRef(() => {});
+  autoSave.current = () => {
+    if (!locked && JSON.stringify(answers) !== JSON.stringify(record.answers))
+      void save(false, false, true);
+  };
+  useEffect(() => {
+    const saveDraft = () => autoSave.current();
+    window.addEventListener("fec:session-warning", saveDraft);
+    return () => window.removeEventListener("fec:session-warning", saveDraft);
+  }, []);
+  async function save(submit: boolean, leave: boolean, automatic = false) {
+    if (busy || (!automatic && !form.current?.reportValidity())) return;
     setError("");
     setNotice("");
     setBusy(true);

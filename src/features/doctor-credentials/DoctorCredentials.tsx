@@ -4,6 +4,7 @@ import type { FormEvent } from "react";
 import {
   api,
   apiBase,
+  secureFetch,
   messageFor,
   readResponse,
   UserFacingError,
@@ -77,7 +78,7 @@ export function DoctorCredentials({ doctorId }: { doctorId?: string }) {
           );
         body.append(c.field, file);
       }
-      const response = await fetch(apiBase + "/doctors/credentials", {
+      const response = await secureFetch(apiBase + "/doctors/credentials", {
         method: "POST",
         credentials: "include",
         body,

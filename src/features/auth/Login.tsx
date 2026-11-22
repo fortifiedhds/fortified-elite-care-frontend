@@ -2,7 +2,13 @@ import { PasswordInput } from "../../shared/ui/PasswordInput";
 import { ArrowRight } from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import { authReturnPath } from "../../shared/lib/auth-return";
 import {
   api,
   apiBase,
@@ -25,6 +31,7 @@ export function Login({
   admin = false,
 }: Props & { admin?: boolean }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [params] = useSearchParams();
   const [google, setGoogle] = useState(false);
   const [providerError, setProviderError] = useState("");
@@ -70,8 +77,12 @@ export function Login({
       <SiteRedirect
         to={
           account.role === "ADMIN"
-            ? siteHref("admin", adminConsolePath)
-            : "/portal"
+            ? siteHref(
+                "admin",
+                authReturnPath(location.state?.returnTo, true) ??
+                  adminConsolePath,
+              )
+            : (authReturnPath(location.state?.returnTo, false) ?? "/portal")
         }
       />
     );
@@ -87,7 +98,11 @@ export function Login({
         }),
       );
       if (result.challenge)
-        navigate(admin ? adminVerificationPath : "/verify-email");
+        navigate(admin ? adminVerificationPath : "/verify-email", {
+          state: {
+            returnTo: admin ? location.pathname : location.state?.returnTo,
+          },
+        });
       else if (result.account) onAccount(result.account);
     } catch (error) {
       setError(messageFor(error));

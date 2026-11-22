@@ -407,13 +407,17 @@ describe("administrator console and private files", () => {
       createdAt: "2026-11-19T10:00:00Z",
     };
     reply("GET", { "/files": () => ok(uploaded ? [metadata] : []) });
-    const fetch = vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
-      uploaded = true;
-      return new Response(JSON.stringify(metadata), {
-        status: 201,
-        headers: { "content-type": "application/json" },
+    const fetch = vi
+      .spyOn(globalThis, "fetch")
+      .mockImplementation(async (url) => {
+        if (String(url).endsWith("/auth/csrf"))
+          return new Response(JSON.stringify({ token: "synthetic-csrf" }));
+        uploaded = true;
+        return new Response(JSON.stringify(metadata), {
+          status: 201,
+          headers: { "content-type": "application/json" },
+        });
       });
-    });
     view(<Documents />);
     await screen.findByText("Your uploaded documents will appear here.");
     fireEvent.change(screen.getByLabelText("Choose a document"), {
