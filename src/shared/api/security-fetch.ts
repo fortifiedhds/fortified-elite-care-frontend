@@ -13,6 +13,15 @@ export function createSecureFetch(base: string): typeof fetch {
       const { token } = (await bootstrap.json()) as { token: string };
       const headers = new Headers(init?.headers ?? request?.headers);
       headers.set("X-CSRF-Token", token);
+      const bootstrapId = bootstrap.headers.get("X-Request-ID");
+      if (
+        bootstrapId &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+          bootstrapId,
+        )
+      )
+        headers.set("X-CSRF-Bootstrap-ID", bootstrapId);
+      else headers.delete("X-CSRF-Bootstrap-ID");
       response = await fetch(
         request ? new Request(request, { ...init, headers }) : input,
         request ? undefined : { ...init, headers },

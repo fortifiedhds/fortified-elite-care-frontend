@@ -55,8 +55,8 @@ export function ForgotPassword({ admin = false }: { admin?: boolean }) {
       title={challenge ? "Check your email." : "Forgot your password?"}
       subtitle={
         challenge
-          ? "If this email is eligible for password recovery, we’ve sent instructions."
-          : "Enter the email address you use to sign in."
+          ? "Enter the six-digit OTP to choose a new password."
+          : "Enter your email address to receive a one-time passcode (OTP)."
       }
     >
       <ErrorMessage>{error}</ErrorMessage>
@@ -111,20 +111,10 @@ export function ForgotPassword({ admin = false }: { admin?: boolean }) {
               disabled={busy}
             />
           </label>
-          <p className="muted">
-            We’ll send instructions if this address is eligible. For your
-            privacy, we won’t confirm whether an account exists.
-          </p>
           <button className="button primary" disabled={busy}>
-            {busy ? "Sending…" : "Send recovery instructions"}
+            {busy ? "Sending OTP…" : "Send OTP"}
           </button>
         </form>
-      )}
-      {!admin && (
-        <p className="form-footer">
-          This also works if you first joined with Google. After verifying your
-          email, you can create a password and keep using Google too.
-        </p>
       )}
       <p className="form-footer">
         <Link className="text-link" to={login}>

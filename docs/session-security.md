@@ -1,5 +1,9 @@
 # Session security and expiry experience
 
+## Diagnosing security-check failures
+
+The transport sends the CSRF bootstrap's validated `X-Request-ID` as `X-CSRF-Bootstrap-ID` on its following mutation. This is a correlation hint only; it does not change proof validation or retry an operation. Invalid/missing trace IDs are discarded. A `403 CSRF_INVALID` displays a safe message and a validated **Support reference** from the failed response header so mobile users can report the failure without developer tools. Passwords, OTPs, cookies and full diagnostic payloads never appear in that reference. See the backend [logging guide](../../fortified-elite-care-backend/docs/logging-and-debugging.md) for failure reasons and tracing a dropped cookie.
+
 FEC uses server-validated cookie sessions. Authentication guards and role, admin-permission and record-access checks run in the backend.
 
 ## HTTP transport

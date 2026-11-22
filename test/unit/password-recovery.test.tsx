@@ -26,25 +26,27 @@ describe("password recovery", () => {
       );
     },
   );
-  it("submits the email without confirming account existence and supports Google-only users", async () => {
+  it("uses a concise OTP instruction and submits email without confirming account existence", async () => {
     reply("GET", { "/auth/password-recovery/challenge": ok({}) });
     const post = reply("POST", {
       "/auth/password-recovery/request": ok(challenge),
     });
     view(<ForgotPassword />);
-    await screen.findByRole("button", { name: "Send recovery instructions" });
-    expect(screen.getByText(/first joined with Google/)).toBeTruthy();
+    await screen.findByRole("button", { name: "Send OTP" });
+    expect(screen.queryByText(/first joined with Google/)).toBeNull();
+    expect(
+      screen.queryByText(/won’t confirm whether an account exists/),
+    ).toBeNull();
+    expect(screen.getByText(/one-time passcode \(OTP\)/)).toBeTruthy();
     change("Email address", "new@example.test");
     fireEvent.submit(
-      screen
-        .getByRole("button", { name: "Send recovery instructions" })
-        .closest("form")!,
+      screen.getByRole("button", { name: "Send OTP" }).closest("form")!,
     );
     await screen.findByLabelText("Verification code");
     expect(post).toHaveBeenCalledWith("/auth/password-recovery/request", {
       body: { email: "new@example.test", admin: false },
     });
-    expect(screen.getByText(/If this email is eligible/)).toBeTruthy();
+    expect(screen.getByText(/Enter the six-digit OTP/)).toBeTruthy();
   });
   it.each([false, true])(
     "resumes and verifies a recovery code then navigates to set password (admin=%s)",
@@ -79,12 +81,10 @@ describe("password recovery", () => {
       "/auth/password-recovery/request": ok(challenge),
     });
     view(<ForgotPassword admin />);
-    await screen.findByRole("button", { name: "Send recovery instructions" });
+    await screen.findByRole("button", { name: "Send OTP" });
     change("Email address", "admin@example.test");
     fireEvent.submit(
-      screen
-        .getByRole("button", { name: "Send recovery instructions" })
-        .closest("form")!,
+      screen.getByRole("button", { name: "Send OTP" }).closest("form")!,
     );
     await waitFor(() =>
       expect(post).toHaveBeenCalledWith("/auth/password-recovery/request", {
@@ -126,19 +126,15 @@ describe("password recovery", () => {
       ),
     });
     view(<ForgotPassword />);
-    await screen.findByRole("button", { name: "Send recovery instructions" });
+    await screen.findByRole("button", { name: "Send OTP" });
     change("Email address", "person@example.test");
     fireEvent.submit(
-      screen
-        .getByRole("button", { name: "Send recovery instructions" })
-        .closest("form")!,
+      screen.getByRole("button", { name: "Send OTP" }).closest("form")!,
     );
     await screen.findByRole("alert");
     reply("POST", { "/auth/password-recovery/request": ok(challenge) });
     fireEvent.submit(
-      screen
-        .getByRole("button", { name: "Send recovery instructions" })
-        .closest("form")!,
+      screen.getByRole("button", { name: "Send OTP" }).closest("form")!,
     );
     await screen.findByLabelText("Verification code");
     fireEvent.click(

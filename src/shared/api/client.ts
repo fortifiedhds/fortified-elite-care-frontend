@@ -38,6 +38,26 @@ export function readResponse<T>(result: {
   response: Response;
 }): T {
   if (result.response.ok && result.data !== undefined) return result.data;
+  if (
+    result.response.status === 403 &&
+    result.error &&
+    typeof result.error === "object" &&
+    "code" in result.error &&
+    result.error.code === "CSRF_INVALID"
+  ) {
+    const requestId = result.response.headers.get("X-Request-ID");
+    const reference =
+      requestId &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        requestId,
+      )
+        ? " Support reference: " + requestId + "."
+        : "";
+    throw new UserFacingError(
+      "We couldn’t confirm your browser’s security check. Please try again." +
+        reference,
+    );
+  }
   const message =
     result.error &&
     typeof result.error === "object" &&

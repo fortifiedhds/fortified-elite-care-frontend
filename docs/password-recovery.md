@@ -6,7 +6,7 @@ The shared authentication layout uses an intrinsic logo row and a flexible conte
 
 `Login` offers **Forgot password?** beside the email/password form. Patients and doctors go to `/forgot-password`; admin login goes to `/console-7c6e4b9f2a83/forgot-password`. Account help also links to password recovery. Google remains an option only on login, as before.
 
-`ForgotPassword` collects an email and submits `{ email, admin }`. The explanation deliberately does not confirm that an account exists. Eligible users receive an email OTP, enter it in the same browser, then proceed to `/reset-password` (or the matching admin console route). Google-only users can use this flow to create a first password; their Google sign-in remains connected. No new account is created through recovery.
+`ForgotPassword` collects an email and submits `{ email, admin }`. The screen uses one instruction explaining “one-time passcode (OTP)” and a **Send OTP** button, without eligibility or Google helper paragraphs. All addresses receive the same response shape. Eligible users receive an email OTP, enter it in the same browser, then proceed to `/reset-password` (or the matching admin console route). Google-only users can create a first password through this flow and retain Google sign-in. No new account is created through recovery.
 
 `ResetPassword` first checks the browser's restricted recovery grant. It offers new password and confirmation fields, both with accessible show/hide controls, 12-character minimum and 128-character maximum. It catches mismatches before sending the request. Successful completion clears the app's account, session deadline state and in-memory drafts, then shows a confirmation and a sign-in link. It does not navigate straight into a dashboard. Admin sign-in still requires its separate email OTP.
 
@@ -44,6 +44,6 @@ Deploy the backend and its password-recovery migration before this frontend. Exi
 
 ## Tests and manual checks
 
-`test/unit/password-recovery.test.tsx` covers care/admin links, generic email submission, Google-only guidance, challenge resumption and scope isolation, OTP errors and resend, navigation to reset, password confirmation and visibility, success/logout, expired/missing grants, save errors, and route registration. The existing shared OTP, password input, CSRF and hosting tests also run.
+`test/unit/password-recovery.test.tsx` covers care/admin links, concise email submission, challenge resumption and scope isolation, OTP errors and resend, navigation to reset, password confirmation and visibility, success/logout, expired/missing grants, save errors, and route registration. The existing shared OTP, password input, CSRF and hosting tests also run.
 
 Run `npm test -- --pool=forks --maxWorkers=1`, `npm run build` and `npm run lint`. On mobile and desktop, check email → OTP → new password → success → normal sign-in, using a test mailbox. Confirm old sessions are rejected, Google-only users can then use either authentication method, and administrator password recovery does not bypass sign-in verification. Browser QA should mock mail/API responses or use a controlled test account; unit tests never send mail.
