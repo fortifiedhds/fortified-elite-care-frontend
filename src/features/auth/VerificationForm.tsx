@@ -10,10 +10,12 @@ export function VerificationForm({
   initial,
   verify,
   label = "Verify code",
+  expiredMessage = "This code has expired. Start the request again.",
 }: {
   initial: Challenge;
   verify: (code: string) => Promise<void>;
   label?: string;
+  expiredMessage?: string;
 }) {
   const [challenge, setChallenge] = useState(initial);
   const [code, setCode] = useState("");
@@ -76,9 +78,7 @@ export function VerificationForm({
           disabled={busy || expired}
         />
       </label>
-      {expired && (
-        <p role="alert">This code has expired. Start the request again.</p>
-      )}
+      {expired && <p role="alert">{expiredMessage}</p>}
       <ErrorMessage>{error}</ErrorMessage>
       {notice && <p role="status">{notice}</p>}
       <div className="actions">

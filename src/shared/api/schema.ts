@@ -1904,6 +1904,13 @@ export interface operations {
                     "application/json": components["schemas"]["ChallengeView"];
                 };
             };
+            /** @description The email is invalid or no eligible account matches it. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     getRecoveryChallenge: {

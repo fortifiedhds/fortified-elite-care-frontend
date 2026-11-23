@@ -1,5 +1,6 @@
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { Route, Routes } from "react-router-dom";
 import { App } from "../../src/app/App";
 import { Login } from "../../src/features/auth/Login";
 import { ForgotPassword } from "../../src/features/auth/ForgotPassword";
@@ -11,6 +12,12 @@ const challenge = { ...signupChallenge, purpose: "PASSWORD_RESET" as const };
 const grant = { expiresAt: "2099-06-15T12:00:00Z", admin: false };
 const change = (name: string, value: string) =>
   fireEvent.change(screen.getByLabelText(name), { target: { value } });
+const sendOtp = (email = "patient@example.test") => {
+  change("Email address", email);
+  fireEvent.submit(
+    screen.getByRole("button", { name: "Send OTP" }).closest("form")!,
+  );
+};
 describe("password recovery", () => {
   it.each([false, true])(
     "login links to the correctly scoped recovery screen (admin=%s)",
@@ -26,7 +33,7 @@ describe("password recovery", () => {
       );
     },
   );
-  it("uses a concise OTP instruction and submits email without confirming account existence", async () => {
+  it("shows the send-OTP form on entry and opens verification only after an accepted request", async () => {
     reply("GET", { "/auth/password-recovery/challenge": ok({}) });
     const post = reply("POST", {
       "/auth/password-recovery/request": ok(challenge),
@@ -47,17 +54,23 @@ describe("password recovery", () => {
       body: { email: "new@example.test", admin: false },
     });
     expect(screen.getByText(/Enter the six-digit OTP/)).toBeTruthy();
+    expect(screen.queryByText(/Use the latest code/)).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Start a new request" }),
+    ).toBeNull();
   });
   it.each([false, true])(
-    "resumes and verifies a recovery code then navigates to set password (admin=%s)",
+    "requests and verifies a recovery code then navigates to set password (admin=%s)",
     async (admin) => {
       reply("GET", {
         "/auth/password-recovery/challenge": ok({ challenge, admin }),
       });
       const post = reply("POST", {
+        "/auth/password-recovery/request": ok(challenge),
         "/auth/password-recovery/verify": ok({ ...grant, admin }),
       });
       view(<ForgotPassword admin={admin} />);
+      sendOtp();
       await screen.findByLabelText("Verification code");
       change("Verification code", "123456");
       fireEvent.click(
@@ -73,7 +86,7 @@ describe("password recovery", () => {
       });
     },
   );
-  it("ignores recovery from another scope and submits a separate admin request", async () => {
+  it("does not restore a previous challenge and submits a separate admin request", async () => {
     reply("GET", {
       "/auth/password-recovery/challenge": ok({ challenge, admin: false }),
     });
@@ -91,12 +104,14 @@ describe("password recovery", () => {
         body: { email: "admin@example.test", admin: true },
       }),
     );
+    expect(api.GET).not.toHaveBeenCalled();
   });
   it("keeps code entry available for correction after a verification error and supports resend", async () => {
     reply("GET", {
       "/auth/password-recovery/challenge": ok({ challenge, admin: false }),
     });
     reply("POST", {
+      "/auth/password-recovery/request": ok(challenge),
       "/auth/password-recovery/verify": fail(
         401,
         "The code is incorrect or expired.",
@@ -104,6 +119,7 @@ describe("password recovery", () => {
       "/auth/resend": ok(challenge),
     });
     view(<ForgotPassword />);
+    sendOtp();
     await screen.findByLabelText("Verification code");
     change("Verification code", "111111");
     fireEvent.click(
@@ -117,7 +133,7 @@ describe("password recovery", () => {
       (screen.getByLabelText("Verification code") as HTMLInputElement).value,
     ).toBe("");
   });
-  it("shows request errors and lets the user retry or start over", async () => {
+  it("shows request errors and lets the user retry before opening verification", async () => {
     reply("GET", { "/auth/password-recovery/challenge": ok({}) });
     reply("POST", {
       "/auth/password-recovery/request": fail(
@@ -137,10 +153,135 @@ describe("password recovery", () => {
       screen.getByRole("button", { name: "Send OTP" }).closest("form")!,
     );
     await screen.findByLabelText("Verification code");
-    fireEvent.click(
-      screen.getByRole("button", { name: "Start a new request" }),
+    expect(
+      screen.queryByRole("button", { name: "Start a new request" }),
+    ).toBeNull();
+    expect(
+      screen
+        .getByRole("link", { name: "Back to sign in" })
+        .getAttribute("href"),
+    ).toBe("/login");
+  });
+  it.each([false, true])(
+    "going back to sign in and reopening forgot password always starts with Send OTP (admin=%s)",
+    async (admin) => {
+      const login = admin ? adminConsolePath : "/login",
+        forgot = admin
+          ? adminConsolePath + "/forgot-password"
+          : "/forgot-password";
+      reply("GET", {
+        "/auth/providers": ok({ google: true, email: true }),
+        "/auth/password-recovery/challenge": ok({ challenge, admin }),
+      });
+      const post = reply("POST", {
+        "/auth/password-recovery/request": ok(challenge),
+      });
+      view(
+        <Routes>
+          <Route
+            path={login}
+            element={<Login account={null} onAccount={vi.fn()} admin={admin} />}
+          />
+          <Route path={forgot} element={<ForgotPassword admin={admin} />} />
+        </Routes>,
+        forgot,
+      );
+      sendOtp();
+      await screen.findByLabelText("Verification code");
+      fireEvent.click(screen.getByRole("link", { name: "Back to sign in" }));
+      await screen.findByRole("button", { name: "Sign in" });
+      fireEvent.click(screen.getByRole("link", { name: "Forgot password?" }));
+      await screen.findByRole("button", { name: "Send OTP" });
+      expect(screen.queryByLabelText("Verification code")).toBeNull();
+      expect(
+        (screen.getByLabelText("Email address") as HTMLInputElement).value,
+      ).toBe("");
+      expect(post).toHaveBeenCalledTimes(1);
+      expect(api.GET).not.toHaveBeenCalledWith(
+        "/auth/password-recovery/challenge",
+        expect.anything(),
+      );
+    },
+  );
+  it("an unrecognised email stays on the email form with an actionable error", async () => {
+    reply("POST", {
+      "/auth/password-recovery/request": fail(
+        400,
+        "We couldn’t find an account with that email address. Check it and try again.",
+      ),
+    });
+    view(<ForgotPassword />);
+    sendOtp("missing@example.test");
+    await screen.findByText(
+      "We couldn’t find an account with that email address. Check it and try again.",
     );
-    expect(screen.getByLabelText("Email address")).toBeTruthy();
+    expect(screen.queryByLabelText("Verification code")).toBeNull();
+    expect(
+      (screen.getByLabelText("Email address") as HTMLInputElement).value,
+    ).toBe("missing@example.test");
+    reply("POST", { "/auth/password-recovery/request": ok(challenge) });
+    sendOtp();
+    await screen.findByLabelText("Verification code");
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+  it("reloading or reopening the screen does not restore an old verification challenge", async () => {
+    reply("GET", {
+      "/auth/password-recovery/challenge": ok({ challenge, admin: false }),
+    });
+    reply("POST", { "/auth/password-recovery/request": ok(challenge) });
+    const first = view(<ForgotPassword />);
+    sendOtp();
+    await screen.findByLabelText("Verification code");
+    first.unmount();
+    view(<ForgotPassword />);
+    expect(screen.getByRole("button", { name: "Send OTP" })).toBeTruthy();
+    expect(screen.queryByLabelText("Verification code")).toBeNull();
+    expect(api.GET).not.toHaveBeenCalled();
+  });
+  it("a late OTP response after leaving the page cannot reopen verification on a fresh visit", async () => {
+    let finish!: (value: ReturnType<typeof ok>) => void;
+    reply("GET", { "/auth/providers": ok({ google: true, email: true }) });
+    const post = reply("POST", {
+      "/auth/password-recovery/request": () =>
+        new Promise<ReturnType<typeof ok>>((resolve) => {
+          finish = resolve;
+        }),
+    });
+    view(
+      <Routes>
+        <Route
+          path="/login"
+          element={<Login account={null} onAccount={vi.fn()} />}
+        />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+      </Routes>,
+      "/forgot-password",
+    );
+    sendOtp();
+    await waitFor(() => expect(post).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByRole("link", { name: "Back to sign in" }));
+    await screen.findByRole("button", { name: "Sign in" });
+    fireEvent.click(screen.getByRole("link", { name: "Forgot password?" }));
+    await act(async () => finish(ok(challenge)));
+    expect(screen.getByRole("button", { name: "Send OTP" })).toBeTruthy();
+    expect(screen.queryByLabelText("Verification code")).toBeNull();
+  });
+  it("expired recovery codes point users back to sign in without a restart button", async () => {
+    reply("POST", {
+      "/auth/password-recovery/request": ok({
+        ...challenge,
+        expiresAt: "2000-01-01T00:00:00Z",
+      }),
+    });
+    view(<ForgotPassword />);
+    sendOtp();
+    await screen.findByText(
+      "This OTP has expired. Go back to sign in to request another one.",
+    );
+    expect(screen.getByRole("link", { name: "Back to sign in" })).toBeTruthy();
+    expect(
+      screen.queryByRole("button", { name: "Start a new request" }),
+    ).toBeNull();
   });
   it("requires matching passwords and provides visibility controls", async () => {
     reply("GET", { "/auth/password-recovery/grant": ok(grant) });
